@@ -1,8 +1,12 @@
-import { auth, currentUser } from "@repo/auth/server";
+import { createAuth } from "@repo/database/convex/auth";
+import { getToken } from "@convex-dev/better-auth/nextjs";
 import { SidebarProvider } from "@repo/design-system/components/ui/sidebar";
 import { showBetaFeature } from "@repo/feature-flags";
 import { secure } from "@repo/security";
+import { fetchQuery } from "convex/nextjs";
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { api } from "@repo/database/convex/_generated/api";
 import { env } from "@/env";
 import { NotificationsProvider } from "./components/notifications-provider";
 import { GlobalSidebar } from "./components/sidebar";
@@ -16,16 +20,21 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
     await secure(["CATEGORY:PREVIEW"]);
   }
 
-  const user = await currentUser();
-  const { redirectToSignIn } = await auth();
+  const token = await getToken(createAuth);
+
+  if (!token) {
+    redirect("/sign-in");
+  }
+
+  const user = await fetchQuery(api.auth.getCurrentUser, {}, { token });
   const betaFeature = await showBetaFeature();
 
   if (!user) {
-    return redirectToSignIn();
+    redirect("/sign-in");
   }
 
   return (
-    <NotificationsProvider userId={user.id}>
+    <NotificationsProvider userId={user._id as string}>
       <SidebarProvider>
         <GlobalSidebar>
           {betaFeature && (

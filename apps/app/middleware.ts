@@ -11,9 +11,9 @@ const securityHeaders = env.FLAGS_SECRET
   ? securityMiddleware(noseconeOptionsWithToolbar)
   : securityMiddleware(noseconeOptions);
 
-// Clerk middleware wraps other middleware in its callback
-// For apps using Clerk, compose middleware inside authMiddleware callback
-// For apps without Clerk, use createNEMO for composition (see apps/web)
+// authMiddleware checks for the better-auth Convex JWT cookie and redirects
+// to /sign-in for unauthenticated requests. Security headers are applied as
+// the inner handler. Public paths (/sign-in, /sign-up, /api/auth) are allowed through.
 export default authMiddleware(() =>
   securityHeaders()
 ) as unknown as NextMiddleware;

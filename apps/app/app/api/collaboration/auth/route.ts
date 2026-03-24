@@ -1,5 +1,8 @@
-import { auth, currentUser } from "@repo/auth/server";
+import { createAuth } from "@repo/database/convex/auth";
+import { api } from "@repo/database/convex/_generated/api";
 import { authenticate } from "@repo/collaboration/auth";
+import { getToken } from "@convex-dev/better-auth/nextjs";
+import { fetchQuery } from "convex/nextjs";
 
 const COLORS = [
   "var(--color-red-500)",
@@ -22,20 +25,20 @@ const COLORS = [
 ];
 
 export const POST = async () => {
-  const user = await currentUser();
-  const { orgId } = await auth();
+  const token = await getToken(createAuth);
+  if (!token) return new Response("Unauthorized", { status: 401 });
 
-  if (!(user && orgId)) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+  const user = await fetchQuery(api.auth.getCurrentUser, {}, { token });
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
+  const orgId = user._id as string;
 
   return authenticate({
-    userId: user.id,
+    userId: user._id as string,
     orgId,
     userInfo: {
-      name:
-        user.fullName ?? user.emailAddresses.at(0)?.emailAddress ?? undefined,
-      avatar: user.imageUrl ?? undefined,
+      name: user.name ?? undefined,
+      avatar: user.image ?? undefined,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
     },
   });

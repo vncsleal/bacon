@@ -1,15 +1,6 @@
-import { createMetadata } from "@repo/seo/metadata";
-import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 
-const title = "Create an account";
-const description = "Enter your details to get started.";
-const SignUp = dynamic(() =>
-  import("@repo/auth/components/sign-up").then((mod) => mod.SignUp)
-);
+// Clerk catch-all route replaced by better-auth sign-up at (better-auth)/sign-up
+const SignUpRedirect = () => redirect("/sign-up");
 
-export const metadata: Metadata = createMetadata({ title, description });
-
-const SignUpPage = () => <SignUp />;
-
-export default SignUpPage;
+export default SignUpRedirect;

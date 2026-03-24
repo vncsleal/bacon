@@ -1,6 +1,6 @@
 "use client";
 
-import { OrganizationSwitcher, UserButton } from "@repo/auth/client";
+import { authClient } from "@repo/auth/client";
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import { Button } from "@repo/design-system/components/ui/button";
 import {
@@ -9,12 +9,20 @@ import {
   CollapsibleTrigger,
 } from "@repo/design-system/components/ui/collapsible";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@repo/design-system/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
+import { Input } from "@repo/design-system/components/ui/input";
 import {
   Sidebar,
   SidebarContent,
@@ -39,25 +47,180 @@ import {
   AnchorIcon,
   BookOpenIcon,
   BotIcon,
+  BuildingIcon,
+  CheckIcon,
   ChevronRightIcon,
+  ChevronsUpDownIcon,
   FolderIcon,
   FrameIcon,
   LifeBuoyIcon,
   MapIcon,
   MoreHorizontalIcon,
   PieChartIcon,
+  PlusIcon,
   SendIcon,
   Settings2Icon,
   ShareIcon,
   SquareTerminalIcon,
   Trash2Icon,
+  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { type ReactNode, useEffect, useState } from "react";
 import { Search } from "./search";
 
 type GlobalSidebarProperties = {
   readonly children: ReactNode;
+};
+
+type OrgItem = { id: string; name: string; slug: string; logo?: string | null };
+
+const OrgSwitcher = () => {
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+  const [orgs, setOrgs] = useState<OrgItem[]>([]);
+  const [creating, setCreating] = useState(false);
+  const [newOrgName, setNewOrgName] = useState("");
+  const [newOrgSlug, setNewOrgSlug] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const activeOrgId = (session?.session as { activeOrganizationId?: string | null } | undefined)?.activeOrganizationId;
+  const activeOrg = orgs.find((o) => o.id === activeOrgId);
+  const displayName = activeOrg?.name ?? session?.user.name ?? session?.user.email ?? "Workspace";
+
+  useEffect(() => {
+    if (!session) return;
+    authClient.organization.list().then(({ data }) => {
+      if (data) setOrgs(data as OrgItem[]);
+    });
+  }, [session]);
+
+  const handleSetActive = async (orgId: string | null) => {
+    await authClient.organization.setActive({ organizationId: orgId as string });
+    router.refresh();
+  };
+
+  const handleCreate = async () => {
+    if (!newOrgName.trim()) return;
+    setLoading(true);
+    try {
+      const slug = newOrgSlug.trim() || newOrgName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const { data, error } = await authClient.organization.create({ name: newOrgName.trim(), slug });
+      if (error) throw new Error(String(error.message));
+      if (data) {
+        setOrgs((prev) => [...prev, data as OrgItem]);
+        await authClient.organization.setActive({ organizationId: data.id });
+        router.refresh();
+      }
+      setCreating(false);
+      setNewOrgName("");
+      setNewOrgSlug("");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!session) return null;
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton className="w-full gap-2 truncate">
+            <BuildingIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <span className="truncate font-medium text-sm">{displayName}</span>
+            <ChevronsUpDownIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-56">
+          <DropdownMenuItem onClick={() => handleSetActive(null)} className="gap-2">
+            <UserIcon className="h-4 w-4 text-muted-foreground" />
+            <span className="truncate">{session.user.name ?? session.user.email ?? "Personal"}</span>
+            {!activeOrgId && <CheckIcon className="ml-auto h-4 w-4" />}
+          </DropdownMenuItem>
+          {orgs.length > 0 && <DropdownMenuSeparator />}
+          {orgs.map((org) => (
+            <DropdownMenuItem key={org.id} onClick={() => handleSetActive(org.id)} className="gap-2">
+              <BuildingIcon className="h-4 w-4 text-muted-foreground" />
+              <span className="truncate">{org.name}</span>
+              {activeOrgId === org.id && <CheckIcon className="ml-auto h-4 w-4" />}
+            </DropdownMenuItem>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setCreating(true)} className="gap-2">
+            <PlusIcon className="h-4 w-4 text-muted-foreground" />
+            <span>Create organization</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={creating} onOpenChange={setCreating}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Create organization</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 py-2">
+            <Input
+              placeholder="Organization name"
+              value={newOrgName}
+              onChange={(e) => {
+                setNewOrgName(e.target.value);
+                setNewOrgSlug(e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""));
+              }}
+              autoFocus
+            />
+            <Input
+              placeholder="Slug (auto-generated)"
+              value={newOrgSlug}
+              onChange={(e) => setNewOrgSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreating(false)} disabled={loading}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreate} disabled={!newOrgName.trim() || loading}>
+              {loading ? "Creating…" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+const UserBtn = ({ showName }: { showName?: boolean }) => {
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/sign-in");
+  };
+
+  if (!session) return null;
+
+  const displayName = session.user.name || session.user.email || "";
+  const initials = displayName.slice(0, 2).toUpperCase();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuButton className="flex w-full items-center gap-2 overflow-hidden">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+            {initials}
+          </div>
+          {showName && (
+            <span className="truncate text-sm">{displayName}</span>
+          )}
+        </SidebarMenuButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 const data = {
@@ -204,10 +367,7 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
                   sidebar.open ? "" : "-mx-1"
                 )}
               >
-                <OrganizationSwitcher
-                  afterSelectOrganizationUrl="/"
-                  hidePersonal
-                />
+                <OrgSwitcher />
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -326,16 +486,7 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem className="flex items-center gap-2">
-              <UserButton
-                appearance={{
-                  elements: {
-                    rootBox: "flex overflow-hidden w-full",
-                    userButtonBox: "flex-row-reverse",
-                    userButtonOuterIdentifier: "truncate pl-0",
-                  },
-                }}
-                showName
-              />
+              <UserBtn showName />
               <div className="flex shrink-0 items-center gap-px">
                 <ModeToggle />
                 <Button

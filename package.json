@@ -1,8 +1,8 @@
 {
-  "name": "next-forge",
-  "version": "5.2.4",
+  "name": "bettercone-starter",
+  "version": "0.1.0",
   "bin": {
-    "next-forge": "dist/index.js"
+    "bettercone-starter": "dist/index.js"
   },
   "files": [
     "dist/index.js"

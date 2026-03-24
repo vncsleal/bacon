@@ -1,7 +1,13 @@
-import { auth } from "@repo/auth/server";
-import { database } from "@repo/database";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Header } from "../components/header";
+
+// Demo pages — replace with your Convex search query after `npx convex dev`.
+// Example: const pages = await fetchQuery(api.pages.search, { q }, { token });
+const DEMO_PAGES = [
+  { _id: "demo-1", name: "Introduction" },
+  { _id: "demo-2", name: "Getting Started" },
+  { _id: "demo-3", name: "Configuration" },
+];
 
 type SearchPageProperties = {
   searchParams: Promise<{
@@ -22,22 +28,15 @@ export const generateMetadata = async ({
 
 const SearchPage = async ({ searchParams }: SearchPageProperties) => {
   const { q } = await searchParams;
-  const pages = await database.page.findMany({
-    where: {
-      name: {
-        contains: q,
-      },
-    },
-  });
-  const { orgId } = await auth();
-
-  if (!orgId) {
-    notFound();
-  }
 
   if (!q) {
     redirect("/");
   }
+
+  // Auth is enforced by the (authenticated) layout — no need to re-check here
+  const pages = DEMO_PAGES.filter((p) =>
+    p.name.toLowerCase().includes(q.toLowerCase())
+  );
 
   return (
     <>
@@ -45,7 +44,7 @@ const SearchPage = async ({ searchParams }: SearchPageProperties) => {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
           {pages.map((page) => (
-            <div className="aspect-video rounded-xl bg-muted/50" key={page.id}>
+            <div className="aspect-video rounded-xl bg-muted/50" key={page._id}>
               {page.name}
             </div>
           ))}

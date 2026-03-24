@@ -4,9 +4,13 @@ import { z } from "zod";
 export const keys = () =>
   createEnv({
     server: {
-      DATABASE_URL: z.url(),
+      SITE_URL: z.string().url().optional(),
+    },
+    client: {
+      NEXT_PUBLIC_CONVEX_URL: z.string().url(),
     },
     runtimeEnv: {
-      DATABASE_URL: process.env.DATABASE_URL,
+      SITE_URL: process.env.SITE_URL,
+      NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     },
   });

@@ -1,1 +1,1 @@
-export * from "@clerk/nextjs";
+export { authClient } from "./better-auth/client";

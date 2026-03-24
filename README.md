@@ -1,22 +1,19 @@
-# ▲ / next-forge
+# bettercone-starter · Convex Edition
 
-**Production-grade Turborepo template for Next.js apps.**
-
-<div>
-  <img src="https://img.shields.io/npm/dy/next-forge" alt="" />
-  <img src="https://img.shields.io/npm/v/next-forge" alt="" />
-  <img src="https://img.shields.io/github/license/vercel/next-forge" alt="" />
-</div>
+**Production-grade Turborepo starter for Next.js SaaS — Convex + Better Auth + Stripe.**
 
 ## Overview
 
-[next-forge](https://github.com/vercel/next-forge) is a production-grade [Turborepo](https://turborepo.com) template for [Next.js](https://nextjs.org/) apps. It's designed to be a comprehensive starting point for building SaaS applications, providing a solid, opinionated foundation with minimal configuration required.
+`bettercone-starter` is the Convex edition of the [Bettercone](https://bettercone.dev) assembly engine starter. Fork it directly, or let the assembly engine generate a configured version with your chosen database/payments adapter.
 
-Built on a decade of experience building web applications, next-forge balances speed and quality to help you ship thoroughly-built products faster.
+Forked from [next-forge](https://github.com/vercel/next-forge) v5.2.4, extended with:
 
-### Philosophy
+- **Authentication** — [Better Auth](https://better-auth.com) (email/password + OAuth + organization plugin)
+- **Database** — [Convex](https://convex.dev) (real-time, serverless, no migrations)
+- **Payments** — [Stripe](https://stripe.com) subscriptions via `@better-auth/stripe`
+- **Adapter pattern** — Switch to Prisma/Drizzle edition by swapping `packages/database/index.ts`
 
-next-forge is built around five core principles:
+### Core principles
 
 - **Fast** — Quick to build, run, deploy, and iterate on
 - **Cheap** — Free to start with services that scale with you
@@ -24,117 +21,87 @@ next-forge is built around five core principles:
 - **Modern** — Latest stable features with healthy community support
 - **Safe** — End-to-end type safety and robust security posture
 
-## Demo
-
-Experience next-forge in action:
-
-- [Web](https://demo.next-forge.com) — Marketing website
-- [App](https://app.demo.next-forge.com) — Main application
-- [Storybook](https://storybook.demo.next-forge.com) — Component library
-- [API](https://api.demo.next-forge.com/health) — API health check
-
-## Features
-
-next-forge comes with batteries included:
-
-### Apps
-
-- **Web** — Marketing site built with Tailwind CSS and TWBlocks
-- **App** — Main application with authentication and database integration
-- **API** — RESTful API with health checks and monitoring
-- **Docs** — Documentation site powered by Mintlify
-- **Email** — Email templates with React Email
-- **Storybook** — Component development environment
-
-### Packages
-
-- **Authentication** — Powered by [Clerk](https://clerk.com)
-- **Database** — Type-safe ORM with migrations
-- **Design System** — Comprehensive component library with dark mode
-- **Payments** — Subscription management via [Stripe](https://stripe.com)
-- **Email** — Transactional emails via [Resend](https://resend.com)
-- **Analytics** — Web ([Google Analytics](https://developers.google.com/analytics)) and product ([Posthog](https://posthog.com))
-- **Observability** — Error tracking ([Sentry](https://sentry.io)), logging, and uptime monitoring ([BetterStack](https://betterstack.com))
-- **Security** — Application security ([Arcjet](https://arcjet.com)), rate limiting, and secure headers
-- **CMS** — Type-safe content management for blogs and documentation
-- **SEO** — Metadata management, sitemaps, and JSON-LD
-- **AI** — AI integration utilities
-- **Webhooks** — Inbound and outbound webhook handling
-- **Collaboration** — Real-time features with avatars and live cursors
-- **Feature Flags** — Feature flag management
-- **Cron** — Scheduled job management
-- **Storage** — File upload and management
-- **Internationalization** — Multi-language support
-- **Notifications** — In-app notification system
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
 - Node.js 20+
-- [pnpm](https://pnpm.io) (or npm/yarn/bun)
-- [Stripe CLI](https://docs.stripe.com/stripe-cli) for local webhook testing
+- [pnpm](https://pnpm.io)
+- A [Convex](https://convex.dev) account
+- A [Stripe](https://stripe.com) account (optional for dev)
 
-### Installation
-
-Create a new next-forge project:
+### Steps
 
 ```sh
-npx next-forge@latest init
+# 1. Install dependencies
+pnpm install
+
+# 2. Set up env vars
+cp .env.example .env.local
+# fill in NEXT_PUBLIC_CONVEX_URL, BETTER_AUTH_SECRET, STRIPE_SECRET_KEY, etc.
+
+# 3. Push schema and start Convex dev server
+cd packages/database && npx convex dev
+
+# 4. Start all apps
+pnpm dev
 ```
-
-### Setup
-
-1. Configure your environment variables
-2. Set up required service accounts (Clerk, Stripe, Resend, etc.)
-3. Run the development server
-
-For detailed setup instructions, read the [documentation](https://www.next-forge.com/docs).
 
 ## Structure
 
-next-forge uses a monorepo structure managed by Turborepo:
-
 ```
-next-forge/
-├── apps/           # Deployable applications
-│   ├── web/        # Marketing website (port 3001)
-│   ├── app/        # Main application (port 3000)
-│   ├── api/        # API server
+bettercone-starter/
+├── apps/
+│   ├── app/        # Main application (port 3000) — auth, org, dashboard
+│   ├── web/        # Marketing site (port 3001)
+│   ├── api/        # API server (port 3002)
 │   ├── docs/       # Documentation
 │   ├── email/      # Email templates
 │   └── storybook/  # Component library
-└── packages/       # Shared packages
-    ├── design-system/
-    ├── database/
-    ├── auth/
-    └── ...
+└── packages/
+    ├── auth/                 # Better Auth client + server helpers
+    ├── database/             # Convex adapter (index.ts = active edition)
+    │   └── convex/           # Convex functions, schema, betterAuth component
+    ├── design-system/        # shadcn/ui component library
+    ├── payments/             # Stripe integration
+    ├── email/                # Resend transactional email
+    ├── collaboration/        # Liveblocks real-time features
+    ├── notifications/        # Knock in-app notifications
+    ├── feature-flags/        # Vercel feature flags
+    ├── webhooks/             # Svix webhook handling
+    ├── analytics/            # PostHog + Google Analytics
+    ├── observability/        # Sentry + BetterStack
+    └── security/             # Arcjet rate limiting + secure headers
 ```
 
-Each app is self-contained and independently deployable. Packages are shared across apps for consistency and maintainability.
+## Adapter Pattern
 
-## Documentation
+The active database edition is determined by `packages/database/index.ts`:
 
-Full documentation is available at [next-forge.com/docs](https://www.next-forge.com/docs), including:
+```ts
+// Convex edition (current)
+export * from "./convex";
 
-- Detailed setup guides
-- Package documentation
-- Migration guides for swapping providers
-- Deployment instructions
-- Examples and recipes
+// Prisma edition (switch by changing the line above)
+// export * from "./prisma";
+```
 
-## Contributing
+The Bettercone assembly engine writes this file when generating a configured starter.
 
-We welcome contributions! See the [contributing guide](https://github.com/vercel/next-forge/blob/main/.github/CONTRIBUTING.md) for details.
+## Features
 
-## Contributors
-
-<a href="https://github.com/vercel/next-forge/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vercel/next-forge" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
+- ✅ Better Auth — email/password, OAuth (GitHub), organization plugin, API keys
+- ✅ Convex — real-time backend, schema-first, no migrations
+- ✅ Stripe subscriptions — free + pro plans, webhook handling
+- ✅ Organization switcher — create, switch, invite members
+- ✅ Transactional email — Resend + React Email
+- ✅ Real-time collaboration — Liveblocks cursors + avatar stack
+- ✅ Feature flags — Vercel flags SDK
+- ✅ Observability — Sentry + BetterStack
+- ✅ Security — Arcjet rate limiting, secure headers
+- ✅ Dark mode — system/light/dark via next-themes
 
 ## License
 
 MIT
+

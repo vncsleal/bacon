@@ -1,17 +1,3 @@
-import { database } from "@repo/database";
-
-export const GET = async () => {
-  const newPage = await database.page.create({
-    data: {
-      name: "cron-temp",
-    },
-  });
-
-  await database.page.delete({
-    where: {
-      id: newPage.id,
-    },
-  });
-
-  return new Response("OK", { status: 200 });
-};
+// Convex is always-on — no keep-alive ping needed.
+// This endpoint exists for Vercel Cron compatibility.
+export const GET = async () => new Response("OK", { status: 200 });
