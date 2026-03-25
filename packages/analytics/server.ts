@@ -2,10 +2,20 @@ import "server-only";
 import { PostHog } from "posthog-node";
 import { keys } from "./keys";
 
-export const analytics = new PostHog(keys().NEXT_PUBLIC_POSTHOG_KEY, {
-  host: keys().NEXT_PUBLIC_POSTHOG_HOST,
+const k = keys();
 
-  // Don't batch events and flush immediately - we're running in a serverless environment
-  flushAt: 1,
-  flushInterval: 0,
-});
+// Guard: export a no-op stub when PostHog credentials are absent so the app
+// boots cleanly from a fresh ZIP without any env vars configured yet.
+export const analytics = k.NEXT_PUBLIC_POSTHOG_KEY && k.NEXT_PUBLIC_POSTHOG_HOST
+  ? new PostHog(k.NEXT_PUBLIC_POSTHOG_KEY, {
+      host: k.NEXT_PUBLIC_POSTHOG_HOST,
+      // Don't batch events and flush immediately - we're running in a serverless environment
+      flushAt: 1,
+      flushInterval: 0,
+    })
+  : ({
+      capture: () => {},
+      identify: () => {},
+      isFeatureEnabled: async (_key: string, _distinctId: string) => null as null,
+      shutdown: async () => {},
+    } as unknown as PostHog);
