@@ -1,25 +1,14 @@
-# Name of our action
-name: Release
+name: CI
 
-# The event that will trigger the action
 on:
-  push:
+  pull_request:
     branches: [main]
 
-# what the action will do
 jobs:
-  release:
-    # The operating system it will run on
+  ci:
     runs-on: ubuntu-latest
-    # This check needs to be in place to prevent a publish loop with auto and github actions
-    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
-    # The list of steps that the action will go through
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Prepare repository
-        run: git fetch --unshallow --tags
+      - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -51,9 +40,3 @@ jobs:
           RESEND_TOKEN: re_dummyci
           STRIPE_SECRET_KEY: sk_dummy_ci_secret_key_for_build
         run: pnpm exec turbo build --filter '!storybook'
-
-      - name: Create Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx auto shipit

@@ -8,8 +8,8 @@ export { createMiddleware as securityMiddleware } from "@nosecone/next";
 export const noseconeOptions: Options = {
   ...defaults,
   // Content Security Policy (CSP) is disabled by default because the values
-  // depend on which Next Forge features are enabled. See
-  // https://www.next-forge.com/packages/security/headers for guidance on how
+  // depend on which bacon features are enabled. See
+  // https://docs.arcjet.com/nosecone/quick-start for guidance on how
   // to configure it.
   contentSecurityPolicy: false,
 };

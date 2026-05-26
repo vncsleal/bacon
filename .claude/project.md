@@ -1,4 +1,4 @@
-# Project Context: bettercone-starter
+# Project Context: bacon
 
 ## Stack (read this before writing any code)
 

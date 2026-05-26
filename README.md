@@ -1,10 +1,10 @@
-# bettercone-starter · Convex Edition
+# bacon · B2B SaaS Starter
 
-**Production-grade Turborepo starter for Next.js SaaS — Convex + Better Auth + Stripe.**
+**Production-grade Turborepo starter for Next.js B2B SaaS — Convex + Better Auth + Stripe.**
 
 ## Overview
 
-`bettercone-starter` is the Convex edition of the [Bettercone](https://bettercone.dev) assembly engine starter. Fork it directly, or let the assembly engine generate a configured version with your chosen database/payments adapter.
+`bacon` (**B**2B + **A**uth + **C**onvex + **O**rganizations + **N**ext.js) is a production-ready, standalone SaaS starter. Fork it and ship.
 
 Forked from [next-forge](https://github.com/vercel/next-forge) v5.2.4, extended with:
 
@@ -50,7 +50,7 @@ pnpm dev
 ## Structure
 
 ```
-bettercone-starter/
+bacon/
 ├── apps/
 │   ├── app/        # Main application (port 3000) — auth, org, dashboard
 │   ├── web/        # Marketing site (port 3001)
@@ -86,7 +86,7 @@ export * from "./convex";
 // export * from "./prisma";
 ```
 
-The Bettercone assembly engine writes this file when generating a configured starter.
+The `packages/database/index.ts` selects the active database adapter.
 
 ## Features
 

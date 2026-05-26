@@ -28,6 +28,8 @@ export async function getSessionInfo(): Promise<{
 
     return { userId: payload.sub ?? null, orgId: null };
   } catch {
+    // biome-ignore lint/suspicious/noConsole: Fallback when JWT parsing fails
+    console.error("getSessionInfo: failed to parse JWT");
     return { userId: null, orgId: null };
   }
 }

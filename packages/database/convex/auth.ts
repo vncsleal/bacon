@@ -14,13 +14,25 @@ import authSchema from "./betterAuth/schema";
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
 // Initialize Stripe client only when API key is available
-// This allows schema generation to work without env vars
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripeClient = stripeSecretKey
-  ? new Stripe(stripeSecretKey, {
-      apiVersion: "2025-09-30.clover",
-    })
-  : (null as unknown as Stripe);
+let stripeClient: Stripe;
+if (stripeSecretKey) {
+  stripeClient = new Stripe(stripeSecretKey, {
+    apiVersion: "2025-09-30.clover",
+  });
+} else {
+  // Lazy placeholder — will be initialized on first use via getStripeClient()
+  stripeClient = null as unknown as Stripe;
+}
+
+function getStripeClient(): Stripe {
+  if (!stripeClient) {
+    throw new Error(
+      "STRIPE_SECRET_KEY is not configured. Set it in .env.local to enable payments."
+    );
+  }
+  return stripeClient;
+}
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -64,7 +76,7 @@ export const createAuth = (
         rateLimit: {
           enabled: true,
           maxRequests: 100,
-          window: 60,
+          timeWindow: 60,
         },
       }),
       // Stripe plugin for subscriptions and payments

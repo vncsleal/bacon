@@ -1,6 +1,11 @@
-# bettercone-starter — Agent Context
+# bacon — Agent Context
 
-This file is a first-class artifact. It is included verbatim in every project assembled by the Bettercone assembly engine. Its purpose is to give AI coding agents (Cursor, Claude Code, Copilot) accurate, non-hallucinogenic context about the assembled stack — so they can write code that actually compiles and runs.
+> **Global rules apply:** `~/.config/opencode/AGENTS.md` — hardening principles (strong typing, no workarounds, no bypasses, fail loud, no fallback chains) and architecture mandate (domain-grouped packages, dependency inversion).
+
+This file gives AI coding agents (Cursor, Claude Code, Copilot) accurate context about the bacon stack — so they can write code that actually compiles and runs.
+
+**bacon** = **B**2B + **A**uth + **C**onvex + **O**rganizations + **N**ext.js
+A production-grade, standalone B2B SaaS starter. No assembly engine. No generator. Fork it and ship.
 
 ---
 
@@ -8,7 +13,7 @@ This file is a first-class artifact. It is included verbatim in every project as
 
 A production-grade Next.js SaaS monorepo. Turborepo + pnpm. TypeScript strict mode throughout.
 
-**Active modules in this assembly:**
+**Active modules:**
 - Authentication — Better Auth (email/password + OAuth + organization plugin + apiKey plugin)
 - Database — Convex (real-time, serverless, no migrations required)
 - Payments — Stripe subscriptions via `@better-auth/stripe`
@@ -21,7 +26,7 @@ A production-grade Next.js SaaS monorepo. Turborepo + pnpm. TypeScript strict mo
 - Observability — Sentry + BetterStack
 - Security — Arcjet rate limiting + nosecone secure headers
 - Analytics — PostHog + Google Analytics
-- i18n — next-intl (en, pt, fr, de, es, zh)
+- i18n — next-international (en, pt, fr, de, es, zh)
 
 ---
 
@@ -48,7 +53,7 @@ packages/
   analytics/    # PostHog + Google Analytics
   observability/ # Sentry + BetterStack
   security/     # Arcjet + nosecone
-  i18n/         # next-intl dictionaries
+  i18n/         # next-international dictionaries
 ```
 
 ---
@@ -204,6 +209,6 @@ See `.env.example` at the root for the full list.
 
 ---
 
-## Assembly Engine Note
+## Adapter Note
 
-This project was assembled by the Bettercone assembly engine from `bettercone.config.yaml`. The `packages/database/index.ts` and `packages/payments/index.ts` files were written by the engine to select the active adapters. Do not edit them manually — they will be overwritten on re-assembly.
+The `packages/database/index.ts` selects the active database adapter. The Convex edition is active by default. Prisma and Drizzle stubs exist for alternate editions — edit `index.ts` to switch. Do not remove the stubs.

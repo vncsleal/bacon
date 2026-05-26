@@ -1,8 +1,8 @@
 {
-  "name": "bettercone-starter",
+  "name": "bacon",
   "version": "0.1.0",
   "bin": {
-    "bettercone-starter": "dist/index.js"
+    "bacon": "dist/index.js"
   },
   "files": [
     "dist/index.js"
@@ -19,7 +19,7 @@
     "boundaries": "turbo boundaries",
     "bump-deps": "npx npm-check-updates --deep -u -x recharts && pnpm install",
     "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system",
-    "migrate": "cd packages/database && npx prisma format && npx prisma generate && npx prisma db push",
+    "migrate": "cd packages/database && npx convex deploy",
     "clean": "git clean -xdf node_modules"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "vitest": "^4.0.3"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {
