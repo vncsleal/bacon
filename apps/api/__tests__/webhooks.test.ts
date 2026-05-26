@@ -22,6 +22,13 @@ vi.mock("@repo/analytics/server", () => ({
   },
 }));
 
+vi.mock("@repo/observability/log", () => ({
+  log: {
+    error: vi.fn(),
+    warn: vi.fn(),
+  },
+}));
+
 vi.mock("@repo/payments", () => ({
   stripe: {
     webhooks: {
@@ -64,7 +71,8 @@ describe("Payments Webhook", () => {
     const body = await response.json();
 
     expect(response.status).toBe(HTTP_INTERNAL_ERROR);
-    expect(body).toEqual({ message: "something went wrong", ok: false });
+    expect(body.message).toContain("stripe-signature");
+    expect(body.ok).toBe(false);
   });
 
   it("returns error on invalid signature", async () => {
@@ -81,7 +89,8 @@ describe("Payments Webhook", () => {
     const body = await response.json();
 
     expect(response.status).toBe(HTTP_INTERNAL_ERROR);
-    expect(body).toEqual({ message: "something went wrong", ok: false });
+    expect(body.message).toContain("Invalid signature");
+    expect(body.ok).toBe(false);
   });
 });
 

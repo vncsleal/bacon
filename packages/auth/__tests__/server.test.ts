@@ -3,6 +3,11 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 const mockCookies = vi.fn();
 
 vi.mock("server-only", () => ({}));
+vi.mock("@repo/observability/log", () => ({
+  log: {
+    error: vi.fn(),
+  },
+}));
 vi.mock("next/headers", () => ({
   cookies: () => mockCookies(),
 }));

@@ -89,7 +89,7 @@ export const POST = async (request: Request): Promise<Response> => {
 
     return NextResponse.json(
       {
-        message: "something went wrong",
+        message,
         ok: false,
       },
       { status: 500 }
