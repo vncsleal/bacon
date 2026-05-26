@@ -1,5 +1,6 @@
 import "server-only";
 import { PostHog } from "posthog-node";
+import { log } from "@repo/observability/log";
 import { keys } from "./keys";
 
 const k = keys();
@@ -15,10 +16,7 @@ export const analytics = k.NEXT_PUBLIC_POSTHOG_KEY && k.NEXT_PUBLIC_POSTHOG_HOST
     })
   : ({
       capture: () => {
-        if (process.env.NODE_ENV === "development") {
-          // biome-ignore lint/suspicious/noConsole: Dev-only analytics logging
-          console.warn("Analytics: PostHog not configured, event dropped");
-        }
+        log.warn("Analytics: PostHog not configured, event dropped");
       },
       identify: () => {},
       isFeatureEnabled: async (_key: string, _distinctId: string) => null as null,
