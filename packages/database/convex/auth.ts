@@ -15,24 +15,9 @@ const siteUrl = process.env.SITE_URL || "http://localhost:3000";
 
 // Initialize Stripe client only when API key is available
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-let stripeClient: Stripe;
-if (stripeSecretKey) {
-  stripeClient = new Stripe(stripeSecretKey, {
-    apiVersion: "2025-09-30.clover",
-  });
-} else {
-  // Lazy placeholder — will be initialized on first use via getStripeClient()
-  stripeClient = null as unknown as Stripe;
-}
-
-function getStripeClient(): Stripe {
-  if (!stripeClient) {
-    throw new Error(
-      "STRIPE_SECRET_KEY is not configured. Set it in .env.local to enable payments."
-    );
-  }
-  return stripeClient;
-}
+const stripeClient = stripeSecretKey
+  ? new Stripe(stripeSecretKey, { apiVersion: "2025-09-30.clover" })
+  : null;
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -80,33 +65,37 @@ export const createAuth = (
         },
       }),
       // Stripe plugin for subscriptions and payments
-      stripe({
-        stripeClient,
-        stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
-        createCustomerOnSignUp: true,
-        subscription: {
-          enabled: true,
-          plans: [
-            {
-              name: "free",
-              priceId: process.env.STRIPE_FREE_PRICE_ID || "price_free",
-              limits: {
-                projects: 1,
+      ...(stripeClient
+        ? [
+            stripe({
+              stripeClient,
+              stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
+              createCustomerOnSignUp: true,
+              subscription: {
+                enabled: true,
+                plans: [
+                  {
+                    name: "free",
+                    priceId: process.env.STRIPE_FREE_PRICE_ID || "price_free",
+                    limits: {
+                      projects: 1,
+                    },
+                  },
+                  {
+                    name: "pro",
+                    priceId: process.env.STRIPE_PRO_PRICE_ID || "price_pro",
+                    limits: {
+                      projects: 10,
+                    },
+                    freeTrial: {
+                      days: 14,
+                    },
+                  },
+                ],
               },
-            },
-            {
-              name: "pro",
-              priceId: process.env.STRIPE_PRO_PRICE_ID || "price_pro",
-              limits: {
-                projects: 10,
-              },
-              freeTrial: {
-                days: 14,
-              },
-            },
-          ],
-        },
-      }),
+            }),
+          ]
+        : []),
     ],
   });
 };

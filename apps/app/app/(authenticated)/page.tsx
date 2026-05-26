@@ -34,6 +34,11 @@ const DEMO_PAGES = [
 
 const App = async () => {
   const pages = DEMO_PAGES;
+
+  if (!env.NEXT_PUBLIC_CONVEX_URL) {
+    notFound();
+  }
+
   const token = await getToken(createAuth);
   const user = token ? await fetchQuery(api.auth.getCurrentUser, {}, { token }) : null;
 

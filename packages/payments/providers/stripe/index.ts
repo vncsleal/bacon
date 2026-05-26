@@ -5,8 +5,12 @@ import "server-only";
 import Stripe from "stripe";
 import { keys } from "../../keys";
 
-export const stripe = new Stripe(keys().STRIPE_SECRET_KEY, {
-  apiVersion: "2025-09-30.clover",
-});
+const secretKey = keys().STRIPE_SECRET_KEY;
+
+export const stripe = secretKey
+  ? new Stripe(secretKey, {
+      apiVersion: "2025-09-30.clover",
+    })
+  : null;
 
 export type { Stripe } from "stripe";

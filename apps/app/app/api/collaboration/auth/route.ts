@@ -25,6 +25,10 @@ const COLORS = [
 ];
 
 export const POST = async () => {
+  if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
+    return new Response("Convex not configured", { status: 503 });
+  }
+
   const token = await getToken(createAuth);
   if (!token) return new Response("Unauthorized", { status: 401 });
 

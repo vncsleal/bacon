@@ -31,9 +31,19 @@ export const contact = async (
       }
     }
 
+    if (!resend) {
+      throw new Error("Email service not configured");
+    }
+
+    if (!env.RESEND_FROM) {
+      throw new Error("Email service not configured");
+    }
+
+    const from = env.RESEND_FROM;
+
     await resend.emails.send({
-      from: env.RESEND_FROM,
-      to: env.RESEND_FROM,
+      from,
+      to: from,
       subject: "Contact form submission",
       replyTo: email,
       react: <ContactTemplate email={email} message={message} name={name} />,
