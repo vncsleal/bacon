@@ -25,6 +25,10 @@ export const getUsers = async (
       error: unknown;
     }
 > => {
+  if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
+    return { data: [] };
+  }
+
   try {
     const token = await getToken(createAuth);
     if (!token) return { data: [] };

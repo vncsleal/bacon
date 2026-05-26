@@ -16,6 +16,10 @@ type AppLayoutProperties = {
 };
 
 const AppLayout = async ({ children }: AppLayoutProperties) => {
+  if (!env.NEXT_PUBLIC_CONVEX_URL) {
+    redirect("/sign-in");
+  }
+
   if (env.ARCJET_KEY) {
     await secure(["CATEGORY:PREVIEW"]);
   }

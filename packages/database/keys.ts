@@ -7,7 +7,7 @@ export const keys = () =>
       SITE_URL: z.string().url().optional(),
     },
     client: {
-      NEXT_PUBLIC_CONVEX_URL: z.string().url(),
+      NEXT_PUBLIC_CONVEX_URL: z.string().url().optional(),
     },
     runtimeEnv: {
       SITE_URL: process.env.SITE_URL,

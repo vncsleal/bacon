@@ -37,7 +37,10 @@ export function Mermaid({ chart }: { chart: string }) {
 
         bindFunctions?.(container as Element);
         setSvg(svg);
-      } catch (_error) {}
+      } catch (_error) {
+        // biome-ignore lint/suspicious/noConsole: Mermaid render failures should be visible in dev
+        console.error("Mermaid chart render failed", _error);
+      }
     }
 
     renderChart();

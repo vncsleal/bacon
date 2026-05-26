@@ -1,7 +1,7 @@
 /**
  * Drizzle edition adapter stub.
  *
- * The assembly engine activates this adapter by writing:
+ * Activate this adapter by editing:
  *   packages/database/index.ts → export * from "./drizzle";
  *
  * To implement this edition:
@@ -14,7 +14,7 @@
  */
 
 throw new Error(
-  "[bettercone-starter] Drizzle adapter is not yet implemented. " +
+  "[bacon] Drizzle adapter is not yet implemented. " +
     "Set packages/database/index.ts to export * from './convex' (default) " +
     "or implement this stub to activate the Drizzle edition."
 );

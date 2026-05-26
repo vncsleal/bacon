@@ -1,7 +1,7 @@
 {
   "plugins": ["npm", "first-time-contributor", "released"],
   "owner": "vncsleal",
-  "repo": "bettercone-starter",
+  "repo": "bacon",
   "name": "Vinicius Leal",
   "email": "oi@iamvini.co"
 }

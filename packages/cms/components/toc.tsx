@@ -14,7 +14,7 @@ export const TableOfContents = ({
 }: TableOfContentsProperties) => (
   <div>
     <RichText
-      // @ts-expect-error "idk"
+      // @ts-expect-error RichText component types diverge from basehub/react-rich-text v9
       components={{
         ol: ({ children }) => (
           <ol className="flex list-none flex-col gap-2 text-sm">{children}</ol>

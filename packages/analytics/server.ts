@@ -1,5 +1,6 @@
 import "server-only";
 import { PostHog } from "posthog-node";
+import { log } from "@repo/observability/log";
 import { keys } from "./keys";
 
 const k = keys();
@@ -14,7 +15,9 @@ export const analytics = k.NEXT_PUBLIC_POSTHOG_KEY && k.NEXT_PUBLIC_POSTHOG_HOST
       flushInterval: 0,
     })
   : ({
-      capture: () => {},
+      capture: () => {
+        log.warn("Analytics: PostHog not configured, event dropped");
+      },
       identify: () => {},
       isFeatureEnabled: async (_key: string, _distinctId: string) => null as null,
       shutdown: async () => {},

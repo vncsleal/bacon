@@ -1,9 +1,9 @@
 ---
-description: Stack-specific rules for bettercone-starter (Convex + Better Auth + Stripe)
+description: Stack-specific rules for bacon (B2B SaaS starter — Convex + Better Auth + Stripe)
 alwaysApply: true
 ---
 
-# bettercone-starter — Cursor Rules
+# bacon — Cursor Rules
 
 ## Stack
 

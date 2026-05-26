@@ -46,7 +46,7 @@ const handleSubscriptionScheduleCanceled = async (
 };
 
 export const POST = async (request: Request): Promise<Response> => {
-  if (!env.STRIPE_WEBHOOK_SECRET) {
+  if (!stripe || !env.STRIPE_WEBHOOK_SECRET) {
     return NextResponse.json({ message: "Not configured", ok: false });
   }
 
@@ -89,7 +89,7 @@ export const POST = async (request: Request): Promise<Response> => {
 
     return NextResponse.json(
       {
-        message: "something went wrong",
+        message,
         ok: false,
       },
       { status: 500 }

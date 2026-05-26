@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { log } from "@repo/observability/log";
 
 export { getToken } from "@convex-dev/better-auth/nextjs";
 
@@ -27,7 +28,8 @@ export async function getSessionInfo(): Promise<{
     ) as { sub?: string };
 
     return { userId: payload.sub ?? null, orgId: null };
-  } catch {
+  } catch (error) {
+    log.error("getSessionInfo: failed to parse JWT", { error: String(error) });
     return { userId: null, orgId: null };
   }
 }

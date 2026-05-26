@@ -10,7 +10,7 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**bettercone-starter version**
+**bacon version**
 I am using version ...
 
 **To Reproduce**
