@@ -16,8 +16,8 @@ const getJwtCookieName = (request: NextRequest) => {
 };
 
 export const authMiddleware =
-  (handler: () => Promise<Response>) =>
-  async (request: NextRequest): Promise<Response> => {
+  (handler: () => Promise<NextResponse>) =>
+  async (request: NextRequest): Promise<NextResponse> => {
     const { pathname } = request.nextUrl;
 
     if (publicPaths.some((p) => pathname.startsWith(p))) {
