@@ -1,6 +1,7 @@
 import { blog } from "@repo/cms";
 import { Feed } from "@repo/cms/components/feed";
 import { Image } from "@repo/cms/components/image";
+import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { cn } from "@repo/design-system/lib/utils";
 import { getDictionary } from "@repo/internationalization";
 import type { Blog, WithContext } from "@repo/seo/json-ld";
@@ -45,14 +46,18 @@ const BlogIndex = async ({ params }: BlogProps) => {
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <Feed queries={[blog.postsQuery]}>
-              {async ([data]) => {
-                "use server";
+              {([data]) => {
+                const {
+                  blog: {
+                    posts: { items },
+                  },
+                } = data as unknown as BlogFeedQueryResult;
 
-                if (!data.blog.posts.items.length) {
+                if (!items.length) {
                   return null;
                 }
 
-                return data.blog.posts.items.map((post, index) => (
+                return items.map((post, index) => (
                   <Link
                     className={cn(
                       "flex cursor-pointer flex-col gap-4 hover:opacity-75",

@@ -2,6 +2,7 @@ import { blog } from "@repo/cms";
 import { Feed } from "@repo/cms/components/feed";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Dictionary } from "@repo/internationalization";
+import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { env } from "@/env";
@@ -16,13 +17,16 @@ export const Hero = async ({ dictionary }: HeroProps) => (
       <div className="flex flex-col items-center justify-center gap-8 py-20 lg:py-40">
         <div>
           <Feed queries={[blog.latestPostQuery]}>
-            {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-            {async ([data]) => {
-              "use server";
+            {([data]) => {
+              const {
+                blog: {
+                  posts: { item },
+                },
+              } = data as unknown as BlogFeedQueryResult;
 
               return (
                 <Button asChild className="gap-4" size="sm" variant="secondary">
-                  <Link href={`/blog/${data.blog.posts.item?._slug}`}>
+                  <Link href={`/blog/${item?._slug}`}>
                     {dictionary.web.home.hero.announcement}{" "}
                     <MoveRight className="h-4 w-4" />
                   </Link>

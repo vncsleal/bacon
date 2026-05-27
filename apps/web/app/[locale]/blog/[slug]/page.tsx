@@ -4,6 +4,7 @@ import { Body } from "@repo/cms/components/body";
 import { CodeBlock } from "@repo/cms/components/code-block";
 import { Feed } from "@repo/cms/components/feed";
 import { Image } from "@repo/cms/components/image";
+import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { TableOfContents } from "@repo/cms/components/toc";
 import { JsonLd } from "@repo/seo/json-ld";
 import { createMetadata } from "@repo/seo/metadata";
@@ -52,11 +53,12 @@ const BlogPost = async ({ params }: BlogPostProperties) => {
 
   return (
     <Feed queries={[blog.postQuery(slug)]}>
-      {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-      {async ([data]) => {
-        "use server";
-
-        const page = data.blog.posts.item;
+      {([data]) => {
+        const {
+          blog: {
+            posts: { item: page },
+          },
+        } = data as unknown as BlogFeedQueryResult;
 
         if (!page) {
           notFound();
@@ -111,14 +113,14 @@ const BlogPost = async ({ params }: BlogPostProperties) => {
                     <div className="mx-auto max-w-prose">
                       <Body
                         components={{
-                          pre: ({ code, language }) => (
+                          pre: ({ code, language }: { code: string; language: string }) => (
                             <CodeBlock
-                              snippets={[{ code, language }]}
+                              snippets={[{ code, language: language as unknown as Parameters<typeof CodeBlock>[0]["snippets"][number]["language"] }]}
                               theme="vesper"
                             />
                           ),
                         }}
-                        content={page.body.json.content}
+                        content={page.body.json.content as unknown as Parameters<typeof Body>[0]["content"]}
                       />
                     </div>
                   </div>

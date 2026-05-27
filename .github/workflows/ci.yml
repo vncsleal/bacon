@@ -40,3 +40,61 @@ jobs:
           RESEND_TOKEN: re_dummyci
           STRIPE_SECRET_KEY: sk_dummy_ci_secret_key_for_build
         run: pnpm exec turbo build --filter '!storybook'
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: |
+            apps/app/.next
+            apps/web/.next
+            node_modules/
+            pnpm-lock.yaml
+            turbo.json
+            package.json
+            apps/*/package.json
+          retention-days: 1
+
+  e2e:
+    needs: [ci]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: next-build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run e2e smoke tests
+        run: pnpm test:e2e
+        env:
+          CI: true
+          BETTER_AUTH_SECRET: dummy-ci-secret-32-chars-long-for-build
+          NEXT_PUBLIC_CONVEX_URL: ""
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_WEB_URL: http://localhost:3001
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report/
+          retention-days: 7

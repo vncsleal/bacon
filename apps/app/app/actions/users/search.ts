@@ -29,7 +29,7 @@ export const searchUsers = async (
     );
 
     return {
-      data: users.map((user) => user._id),
+      data: users.map((user: { _id: string }) => user._id),
     };
   } catch (error) {
     return { error };

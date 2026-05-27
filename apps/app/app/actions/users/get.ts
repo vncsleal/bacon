@@ -40,7 +40,7 @@ export const getUsers = async (
     );
 
     return {
-      data: users.map((user, i) => ({
+      data: users.map((user: { name?: string | null; email?: string | null; image?: string | null }, i: number) => ({
         name: user.name ?? user.email ?? "",
         avatar: user.image ?? undefined,
         color: COLORS[i % COLORS.length],

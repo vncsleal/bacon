@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { legal } from "@repo/cms";
 import { Body } from "@repo/cms/components/body";
 import { Feed } from "@repo/cms/components/feed";
+import type { LegalFeedQueryResult } from "@repo/cms/adapters/port";
 import { TableOfContents } from "@repo/cms/components/toc";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
@@ -42,11 +43,10 @@ const LegalPage = async ({ params }: LegalPageProperties) => {
 
   return (
     <Feed queries={[legal.postQuery(slug)]}>
-      {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-      {async ([data]) => {
-        "use server";
-
-        const page = data.legalPages.item;
+      {([data]) => {
+        const {
+          legalPages: { item: page },
+        } = data as unknown as LegalFeedQueryResult;
 
         if (!page) {
           notFound();
@@ -70,7 +70,7 @@ const LegalPage = async ({ params }: LegalPageProperties) => {
             <div className="mt-16 flex flex-col items-start gap-8 sm:flex-row">
               <div className="sm:flex-1">
                 <div className="prose prose-neutral dark:prose-invert">
-                  <Body content={page.body.json.content} />
+                  <Body content={page.body.json.content as unknown as Parameters<typeof Body>[0]["content"]} />
                 </div>
               </div>
               <div className="sticky top-24 hidden shrink-0 md:block">

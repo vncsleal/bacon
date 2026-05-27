@@ -4,7 +4,9 @@ import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import languine from "./languine.json" with { type: "json" };
 
-const locales = [languine.locale.source, ...languine.locale.targets];
+const locales = [languine.locale.source, ...languine.locale.targets].filter(
+  (l): l is string => typeof l === "string" && l.length > 0
+);
 
 const I18nMiddleware = createI18nMiddleware({
   locales,
@@ -13,7 +15,9 @@ const I18nMiddleware = createI18nMiddleware({
   resolveLocaleFromRequest: (request: NextRequest) => {
     const headers = Object.fromEntries(request.headers.entries());
     const negotiator = new Negotiator({ headers });
-    const acceptedLanguages = negotiator.languages();
+    const acceptedLanguages = negotiator.languages().filter(
+      (l) => l !== "*" && l.length > 0
+    );
 
     const matchedLocale = matchLocale(acceptedLanguages, locales, "en");
 
