@@ -4,6 +4,46 @@
   "javascript": {
     "globals": ["Liveblocks"]
   },
+  "linter": {
+    "rules": {
+      "style": {
+        "noMagicNumbers": "off",
+        "useBlockStatements": "off",
+        "noParameterAssign": "off",
+        "useFilenamingConvention": "off"
+      },
+      "suspicious": {
+        "useAwait": "off",
+        "noArrayIndexKey": "off",
+        "noMisplacedAssertion": "off",
+        "noEmptyBlockStatements": "off",
+        "noConsole": "off",
+        "noExplicitAny": "off"
+      },
+      "nursery": {
+        "noShadow": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off",
+        "noNamespaceImport": "off",
+        "noDelete": "off",
+        "useTopLevelRegex": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "useSimplifiedLogicExpression": "off",
+        "noExcessiveCognitiveComplexity": "off",
+        "noBannedTypes": "off"
+      },
+      "correctness": {
+        "noUnusedImports": "warn",
+        "noUnusedVariables": "off"
+      }
+    }
+  },
   "files": {
     "includes": [
       "**/*",
@@ -17,7 +57,16 @@
       "!apps/docs/**/*.json",
       "!apps/email/.react-email",
       "!packages/cms/basehub-types.d.ts",
-      "!e2e"
+      "!e2e",
+      "!.next",
+      "!.turbo",
+      "!coverage",
+      "!playwright-report",
+      "!playwright-results",
+      "!dist",
+      "!storybook-static",
+      "!packages/database/convex/_generated",
+      "!packages/database/convex/betterAuth/_generated"
     ]
   }
 }
