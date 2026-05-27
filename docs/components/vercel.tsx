@@ -42,10 +42,7 @@ export const VercelButton = () => {
   url.searchParams.set("from", "templates");
   url.searchParams.set("project-name", "bacon");
   url.searchParams.set("repository-name", "bacon");
-  url.searchParams.set(
-    "repository-url",
-    "https://github.com/vncsleal/bacon"
-  );
+  url.searchParams.set("repository-url", "https://github.com/vncsleal/bacon");
   url.searchParams.set("root-directory", "apps/app");
   url.searchParams.set("skippable-integrations", "1");
 

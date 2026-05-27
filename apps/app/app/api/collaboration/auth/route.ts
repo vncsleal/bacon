@@ -1,9 +1,9 @@
-import { createAuth } from "@repo/database/convex/auth";
-import { api } from "@repo/database/convex/_generated/api";
-import { authenticate } from "@repo/collaboration/auth";
 import { getToken } from "@convex-dev/better-auth/nextjs";
-import { fetchQuery } from "convex/nextjs";
+import { authenticate } from "@repo/collaboration/auth";
+import { api } from "@repo/database/convex/_generated/api";
+import { createAuth } from "@repo/database/convex/auth";
 import { withRateLimit } from "@repo/security";
+import { fetchQuery } from "convex/nextjs";
 
 const COLORS = [
   "var(--color-red-500)",

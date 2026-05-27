@@ -1,12 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const publicPaths = [
-  "/sign-in",
-  "/sign-up",
-  "/verify-email",
-  "/api/auth",
-];
+const publicPaths = ["/sign-in", "/sign-up", "/verify-email", "/api/auth"];
 
 /** Secure-prefix is applied in production (https). */
 const getJwtCookieName = (request: NextRequest) => {

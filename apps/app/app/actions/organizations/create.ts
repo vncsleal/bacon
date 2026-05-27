@@ -3,7 +3,10 @@
 import { headers } from "next/headers";
 
 export const createOrganization = async (name: string, slug: string) => {
-  const siteUrl = process.env.BETTER_AUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const siteUrl =
+    process.env.BETTER_AUTH_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    "http://localhost:3000";
 
   const response = await fetch(`${siteUrl}/api/auth/organization/create`, {
     method: "POST",

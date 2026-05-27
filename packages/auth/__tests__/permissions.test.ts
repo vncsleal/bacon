@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 const UNKNOWN_RESOURCE_PATTERN = /doesNotExist/;
+
 import { ac } from "../permissions";
 
 // Cast to Role because better-auth's createAccessControl returns different
@@ -34,9 +35,13 @@ function deny(result: AuthorizeResult): void {
 function authorize(
   role: Role,
   resource: string,
-  action: string,
+  action: string
 ): AuthorizeResult {
-  return (role.authorize as unknown as (request: Record<string, string[]>) => AuthorizeResult)({ [resource]: [action] });
+  return (
+    role.authorize as unknown as (
+      request: Record<string, string[]>
+    ) => AuthorizeResult
+  )({ [resource]: [action] });
 }
 
 const MATRIX: Record<string, Record<string, Record<string, boolean>>> = {
@@ -71,9 +76,7 @@ describe("RBAC Permissions", () => {
   describe("exhaustive permission matrix", () => {
     for (const [roleName, role] of Object.entries(ROLES)) {
       describe(`${roleName} role`, () => {
-        for (const [resource, actions] of Object.entries(
-          MATRIX[roleName],
-        )) {
+        for (const [resource, actions] of Object.entries(MATRIX[roleName])) {
           describe(resource, () => {
             for (const [action, expected] of Object.entries(actions)) {
               it(`${expected ? "allows" : "denies"} ${action}`, () => {

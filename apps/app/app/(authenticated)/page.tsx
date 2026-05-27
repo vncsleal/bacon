@@ -1,6 +1,6 @@
-import { createAuth } from "@repo/database/convex/auth";
-import { api } from "@repo/database/convex/_generated/api";
 import { getToken } from "@convex-dev/better-auth/nextjs";
+import { api } from "@repo/database/convex/_generated/api";
+import { createAuth } from "@repo/database/convex/auth";
 import { fetchQuery } from "convex/nextjs";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
@@ -40,7 +40,9 @@ const App = async () => {
   }
 
   const token = await getToken(createAuth);
-  const user = token ? await fetchQuery(api.auth.getCurrentUser, {}, { token }) : null;
+  const user = token
+    ? await fetchQuery(api.auth.getCurrentUser, {}, { token })
+    : null;
 
   if (!user) {
     notFound();

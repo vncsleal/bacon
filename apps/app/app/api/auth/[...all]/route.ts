@@ -1,5 +1,5 @@
-import { withRateLimit } from "@repo/security";
 import { nextJsHandler } from "@convex-dev/better-auth/nextjs";
+import { withRateLimit } from "@repo/security";
 
 const handlers = nextJsHandler();
 

@@ -279,8 +279,8 @@ const LocalImage = ({
     alt={alt}
     height={height}
     src={src}
-    width={width}
     style={{ maxWidth: "100%", height: "auto" }}
+    width={width}
   />
 );
 
@@ -289,9 +289,7 @@ export const createLocalCmsUi = (): CmsUiComponents => ({
     children,
   }: {
     queries: readonly unknown[];
-    children: (
-      data: readonly unknown[]
-    ) => ReactNode | Promise<ReactNode>;
+    children: (data: readonly unknown[]) => ReactNode | Promise<ReactNode>;
   }) => {
     const result = children([buildFixture()]);
     return result instanceof Promise ? await result : result;

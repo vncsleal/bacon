@@ -1,7 +1,7 @@
 import { blog } from "@repo/cms";
+import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { Feed } from "@repo/cms/components/feed";
 import { Image } from "@repo/cms/components/image";
-import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { cn } from "@repo/design-system/lib/utils";
 import { getDictionary } from "@repo/internationalization";
 import type { Blog, WithContext } from "@repo/seo/json-ld";

@@ -3,18 +3,14 @@ import { mutation, query } from "./_generated/server";
 
 export const listAll = query({
   args: {},
-  handler: async (ctx) => {
-    return ctx.db.query("page").collect();
-  },
+  handler: async (ctx) => ctx.db.query("page").collect(),
 });
 
 export const search = query({
   args: { q: v.string() },
   handler: async (ctx, { q }) => {
     const all = await ctx.db.query("page").collect();
-    return all.filter((p) =>
-      p.name.toLowerCase().includes(q.toLowerCase())
-    );
+    return all.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()));
   },
 });
 

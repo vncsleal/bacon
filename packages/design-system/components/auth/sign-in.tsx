@@ -3,10 +3,5 @@
 import { AuthView } from "@bettercone/ui";
 
 export function SignIn() {
-  return (
-    <AuthView
-      view="SIGN_IN"
-      redirectTo="/dashboard"
-    />
-  );
+  return <AuthView redirectTo="/dashboard" view="SIGN_IN" />;
 }

@@ -4,8 +4,8 @@ import { AnalyticsProvider } from "@repo/analytics/provider";
 import { DesignSystemProvider } from "@repo/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { Toolbar } from "@repo/feature-flags/components/toolbar";
-import { ConvexClientProvider } from "./ConvexClientProvider";
 import type { ReactNode } from "react";
+import { ConvexClientProvider } from "./ConvexClientProvider";
 
 type RootLayoutProperties = {
   readonly children: ReactNode;
@@ -22,7 +22,10 @@ const RootLayout = ({ children }: RootLayoutProperties) => (
               "/legal/privacy",
               env.NEXT_PUBLIC_WEB_URL
             ).toString()}
-            termsUrl={new URL("/legal/terms", env.NEXT_PUBLIC_WEB_URL).toString()}
+            termsUrl={new URL(
+              "/legal/terms",
+              env.NEXT_PUBLIC_WEB_URL
+            ).toString()}
           >
             {children}
           </DesignSystemProvider>

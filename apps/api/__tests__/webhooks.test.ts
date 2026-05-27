@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const HTTP_OK = 200;
 const HTTP_INTERNAL_ERROR = 500;
@@ -39,8 +39,8 @@ vi.mock("@repo/payments", () => ({
   },
 }));
 
-import { POST as paymentsPOST } from "../app/webhooks/payments/route";
 import { headers } from "next/headers";
+import { POST as paymentsPOST } from "../app/webhooks/payments/route";
 
 describe("Payments Webhook", () => {
   beforeEach(() => {
