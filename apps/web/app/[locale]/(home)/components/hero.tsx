@@ -17,12 +17,15 @@ export const Hero = async ({ dictionary }: HeroProps) => (
         <div>
           <Feed queries={[blog.latestPostQuery]}>
             {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-            {async ([data]) => {
+            {async ([data]: readonly unknown[]) => {
               "use server";
+              const result = data as {
+                blog: { posts: { item: { _slug: string } | null } };
+              };
 
               return (
                 <Button asChild className="gap-4" size="sm" variant="secondary">
-                  <Link href={`/blog/${data.blog.posts.item?._slug}`}>
+                  <Link href={`/blog/${result.blog.posts.item?._slug}`}>
                     {dictionary.web.home.hero.announcement}{" "}
                     <MoveRight className="h-4 w-4" />
                   </Link>

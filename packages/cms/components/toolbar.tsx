@@ -1,1 +1,3 @@
-export { Toolbar } from "basehub/next-toolbar";
+import { getCmsAdapter } from "../adapters";
+
+export const Toolbar = getCmsAdapter().ui.Toolbar;

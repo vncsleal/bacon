@@ -1,1 +1,3 @@
-export { Pump as Feed } from "basehub/react-pump";
+import { getCmsAdapter } from "../adapters";
+
+export const Feed = getCmsAdapter().ui.Feed;

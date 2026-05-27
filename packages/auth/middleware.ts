@@ -16,12 +16,12 @@ const getJwtCookieName = (request: NextRequest) => {
 };
 
 export const authMiddleware =
-  (handler: () => unknown) =>
+  (handler: () => Promise<Response>) =>
   async (request: NextRequest): Promise<Response> => {
     const { pathname } = request.nextUrl;
 
     if (publicPaths.some((p) => pathname.startsWith(p))) {
-      return handler() as Response;
+      return await handler();
     }
 
     const cookieName = getJwtCookieName(request);
@@ -33,5 +33,5 @@ export const authMiddleware =
       return NextResponse.redirect(signInUrl);
     }
 
-    return handler() as Response;
+    return await handler();
   };

@@ -6,9 +6,13 @@ import { env } from "@/env";
 
 export const Footer = () => (
   <Feed queries={[legal.postsQuery]}>
-    {async ([data]) => {
+    {async ([data]: readonly unknown[]) => {
       "use server";
-
+      const result = data as {
+        legalPages: {
+          items: Array<{ _title: string; _slug: string }>;
+        };
+      };
       const navigationItems = [
         {
           title: "Home",
@@ -28,7 +32,7 @@ export const Footer = () => (
         {
           title: "Legal",
           description: "We stay on top of the latest legal requirements.",
-          items: data.legalPages.items.map((post) => ({
+          items: result.legalPages.items.map((post) => ({
             title: post._title,
             href: `/legal/${post._slug}`,
           })),

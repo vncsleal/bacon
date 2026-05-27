@@ -43,10 +43,19 @@ const LegalPage = async ({ params }: LegalPageProperties) => {
   return (
     <Feed queries={[legal.postQuery(slug)]}>
       {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-      {async ([data]) => {
+      {async ([data]: readonly unknown[]) => {
         "use server";
-
-        const page = data.legalPages.item;
+        const result = data as {
+          legalPages: {
+            item: {
+              _slug: string;
+              _title: string;
+              description: string;
+              body: { json: { content: never[]; toc: unknown[] }; plainText: string; readingTime: number };
+            } | null;
+          };
+        };
+        const page = result.legalPages.item;
 
         if (!page) {
           notFound();

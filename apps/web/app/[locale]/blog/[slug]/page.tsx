@@ -53,10 +53,24 @@ const BlogPost = async ({ params }: BlogPostProperties) => {
   return (
     <Feed queries={[blog.postQuery(slug)]}>
       {/* biome-ignore lint/suspicious/useAwait: "Server Actions must be async" */}
-      {async ([data]) => {
+      {async ([data]: readonly unknown[]) => {
         "use server";
-
-        const page = data.blog.posts.item;
+        const result = data as {
+          blog: {
+            posts: {
+              item: {
+                _slug: string;
+                _title: string;
+                date: string;
+                description: string;
+                image: { url: string; width: number; height: number; alt: string | null };
+                authors: Array<{ _title: string }>;
+                body: { json: { content: never[]; toc: unknown[] }; plainText: string; readingTime: number };
+              } | null;
+            };
+          };
+        };
+        const page = result.blog.posts.item;
 
         if (!page) {
           notFound();
