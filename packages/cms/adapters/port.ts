@@ -59,14 +59,65 @@ export type LegalPost = LegalPostMeta & {
   };
 };
 
-export type CmsUiComponents = {
-  readonly Feed: (
-    props: {
-      queries: readonly unknown[];
-      children: (data: readonly unknown[]) => Promise<ReactNode>;
-    }
-  ) => Promise<ReactNode>;
-  readonly Toolbar: () => null;
+// Feed query fragments always include image — guaranteed by the fragment shape.
+// Null would mean the fragment itself returned null, which basehub doesn't do
+// when the field is selected.
+export type BlogFeedItem = {
+  readonly _slug: string;
+  readonly _title: string;
+  readonly date: string;
+  readonly description: string;
+  readonly image: PostMetaImage;
 };
 
+// Feed query fragments always include image — guaranteed by the fragment shape.
+export type BlogFeedItemDetail = Post & {
+  readonly image: PostMetaImage;
+};
+
+export type BlogFeedQueryResult = {
+  readonly blog: {
+    readonly posts: {
+      readonly items: readonly BlogFeedItem[];
+      readonly item: BlogFeedItemDetail | null;
+    };
+  };
+};
+
+export type LegalFeedQueryResult = {
+  readonly legalPages: {
+    readonly items: readonly LegalPostMeta[];
+    readonly item: LegalPost | null;
+  };
+};
+
+export type FeedProps = {
+  queries: readonly unknown[];
+  children: (data: readonly unknown[]) => ReactNode | Promise<ReactNode>;
+};
+
+export type ImageProps = {
+  readonly src: string;
+  readonly width: number;
+  readonly height: number;
+  readonly alt: string;
+  readonly className?: string;
+  readonly priority?: boolean;
+};
+
+export type CmsUiComponents = {
+  readonly Feed: (props: FeedProps) => Promise<ReactNode>;
+  readonly Toolbar: () => null;
+  readonly Image: (props: ImageProps) => ReactNode;
+  readonly Body: (
+    props: {
+      readonly content: unknown[];
+      readonly components?: Record<string, unknown>;
+    }
+  ) => ReactNode;
+};
+
+// Data queries are handled by the existing index.ts which already guards
+// against missing BASEHUB_TOKEN (returns empty arrays / null). No adapter
+// needed — the data layer doesn't crash without credentials.
 export type CmsDataPort = Record<string, never>;

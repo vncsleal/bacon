@@ -1,3 +1,5 @@
 import { getCmsAdapter } from "../adapters";
+import type { CmsUiComponents } from "../adapters/port";
 
-export const Toolbar = getCmsAdapter().ui.Toolbar;
+export const Toolbar: CmsUiComponents["Toolbar"] = () =>
+  getCmsAdapter().ui.Toolbar();

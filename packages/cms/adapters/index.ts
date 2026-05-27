@@ -9,18 +9,32 @@ type CmsAdapter = {
 };
 
 let adapter: CmsAdapter | undefined;
+const getRemoteImage = (): CmsUiComponents["Image"] => {
+  const mod = require("basehub/next-image");
+  return (props: import("./port").ImageProps) => mod.BaseHubImage(props);
+};
+
+const getRemoteBody = (): CmsUiComponents["Body"] => {
+  const mod = require("basehub/react-rich-text");
+  return (props: { readonly content: unknown[] }) => mod.RichText(props);
+};
 
 const createRemoteData = (): CmsDataPort => ({});
 
 const createRemoteUi = (): CmsUiComponents => ({
-  // biome-ignore lint/suspicious/noExplicitAny: Pump is a generic basehub component with
-  // complex type inference from query fragments. The adapter's generic Feed type
-  // can't express Pump's specific query shapes, so we cast at the adapter boundary.
-  Feed: async (props: Record<string, unknown>) => {
+  Feed: async ({ queries, children }) => {
     const { Pump } = await import("basehub/react-pump");
-    return Pump(props as unknown as Parameters<typeof Pump>[0]);
+    return Pump({ queries, children } as unknown as Parameters<typeof Pump>[0]);
   },
   Toolbar: () => null,
+  Image: (props) => {
+    const Img = getRemoteImage();
+    return Img(props);
+  },
+  Body: (props) => {
+    const B = getRemoteBody();
+    return B(props);
+  },
 });
 
 export const getCmsAdapter = (): CmsAdapter => {

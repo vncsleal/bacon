@@ -1,3 +1,5 @@
-import { RichText } from "basehub/react-rich-text";
+import { getCmsAdapter } from "../adapters";
+import type { CmsUiComponents } from "../adapters/port";
 
-export const Body = RichText;
+export const Body: CmsUiComponents["Body"] = (props) =>
+  getCmsAdapter().ui.Body(props);
