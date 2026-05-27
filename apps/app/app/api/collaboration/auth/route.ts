@@ -3,6 +3,7 @@ import { api } from "@repo/database/convex/_generated/api";
 import { authenticate } from "@repo/collaboration/auth";
 import { getToken } from "@convex-dev/better-auth/nextjs";
 import { fetchQuery } from "convex/nextjs";
+import { withRateLimit } from "@repo/security";
 
 const COLORS = [
   "var(--color-red-500)",
@@ -25,6 +26,8 @@ const COLORS = [
 ];
 
 export const POST = async () => {
+  const denied = await withRateLimit({ max: 30, window: "1m" });
+  if (denied) return denied;
   if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
     return new Response("Convex not configured", { status: 503 });
   }

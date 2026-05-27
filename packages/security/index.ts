@@ -2,6 +2,7 @@ import arcjet, {
   type ArcjetBotCategory,
   type ArcjetWellKnownBot,
   detectBot,
+  fixedWindow,
   request,
   shield,
 } from "@arcjet/next";
@@ -9,28 +10,29 @@ import { keys } from "./keys";
 
 const arcjetKey = keys().ARCJET_KEY;
 
+type RateLimitOptions = {
+  max: number;
+  window: string;
+  mode?: "LIVE" | "DRY_RUN";
+};
+
+const base = arcjetKey
+  ? arcjet({
+      key: arcjetKey,
+      characteristics: ["ip.src"],
+      rules: [
+        shield({ mode: "LIVE" }),
+      ],
+    })
+  : null;
+
 export const secure = async (
   allow: (ArcjetWellKnownBot | ArcjetBotCategory)[],
   sourceRequest?: Request
 ) => {
-  if (!arcjetKey) {
+  if (!base) {
     return;
   }
-
-  const base = arcjet({
-    // Get your site key from https://app.arcjet.com
-    key: arcjetKey,
-    // Identify the user by their IP address
-    characteristics: ["ip.src"],
-    rules: [
-      // Protect against common attacks with Arcjet Shield
-      shield({
-        // Will block requests. Use "DRY_RUN" to log only
-        mode: "LIVE",
-      }),
-      // Other rules are added in different routes
-    ],
-  });
 
   const req = sourceRequest ?? (await request());
   const aj = base.withRule(detectBot({ mode: "LIVE", allow }));
@@ -46,5 +48,50 @@ export const secure = async (
     }
 
     throw new Error("Access denied");
+  }
+};
+
+export const rateLimit = async (
+  options: RateLimitOptions,
+  sourceRequest?: Request
+) => {
+  if (!base) {
+    return;
+  }
+
+  const req = sourceRequest ?? (await request());
+  const aj = base.withRule(
+    fixedWindow({
+      mode: options.mode ?? "LIVE",
+      max: options.max,
+      window: options.window,
+    })
+  );
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
+      throw new Error("Rate limit exceeded");
+    }
+    throw new Error("Access denied");
+  }
+};
+
+const HTTP_TOO_MANY_REQUESTS = 429;
+const HTTP_FORBIDDEN = 403;
+
+/** Wraps rateLimit() and returns a Response on denial with proper HTTP status,
+ * or null when the request is allowed. Use at the top of route handlers. */
+export const withRateLimit = async (
+  options: RateLimitOptions,
+  sourceRequest?: Request
+): Promise<Response | null> => {
+  try {
+    await rateLimit(options, sourceRequest);
+    return null;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Access denied";
+    const status = message === "Rate limit exceeded" ? HTTP_TOO_MANY_REQUESTS : HTTP_FORBIDDEN;
+    return new Response(message, { status });
   }
 };
