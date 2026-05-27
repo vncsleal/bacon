@@ -34,7 +34,7 @@ We chose **Turborepo 2 + pnpm workspaces** as the monorepo foundation.
 
 3. **Remote caching** — Turborepo supports remote caching via Vercel's infrastructure, dramatically speeding up CI builds.
 
-4. **Task boundaries** — Turborepo's boundary system (`pnpm boundaries`) enforces that packages only import from declared workspace dependencies, preventing dependency tangling.
+4. **Task boundaries** — Turborepo's boundary system (`turbo boundaries`) enforces that packages only import from declared workspace dependencies, preventing dependency tangling.
 
 5. **Community standard** — Turborepo is the de facto monorepo standard for Next.js projects. Documentation, tutorials, and community patterns are abundant.
 

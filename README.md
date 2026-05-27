@@ -6,11 +6,11 @@
 <p align="center">
   <a href="#quick-start"><img src="https://img.shields.io/badge/status-production--ready-brightgreen" alt="Status"></a>
   <a href="license.md"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
-  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16.0-black" alt="Next.js 16"></a>
-  <a href="https://turborepo.com"><img src="https://img.shields.io/badge/Turborepo-2-EF4444" alt="Turborepo 2"></a>
-  <a href="https://pnpm.io"><img src="https://img.shields.io/badge/pnpm-10-F69220" alt="pnpm 10"></a>
-  <a href="https://convex.dev"><img src="https://img.shields.io/badge/Convex-1.30-FBBC04" alt="Convex"></a>
-  <a href="https://better-auth.com"><img src="https://img.shields.io/badge/Better%20Auth-1.0-7C3AED" alt="Better Auth"></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-%5E16.0-black" alt="Next.js"></a>
+  <a href="https://turborepo.com"><img src="https://img.shields.io/badge/Turborepo-%5E2-EF4444" alt="Turborepo"></a>
+  <a href="https://pnpm.io"><img src="https://img.shields.io/badge/pnpm-%5E10-F69220" alt="pnpm"></a>
+  <a href="https://convex.dev"><img src="https://img.shields.io/badge/Convex-%5E1.30-FBBC04" alt="Convex"></a>
+  <a href="https://better-auth.com"><img src="https://img.shields.io/badge/Better%20Auth-1.3-7C3AED" alt="Better Auth"></a>
 </p>
 
 ---
@@ -95,7 +95,7 @@ A **complete, integrated B2B SaaS** with 19 packages and 6 apps — dashboard, m
 
 ## Quick Start
 
-You can go from zero to running in about 5 minutes.
+**Time estimate:** ~5 minutes with an existing Convex account; ~10-15 minutes setting up from scratch.
 
 ### Prerequisites
 
@@ -104,7 +104,7 @@ You can go from zero to running in about 5 minutes.
 | [Node.js 20+](https://nodejs.org) | Yes | Earlier versions not supported |
 | [pnpm 10](https://pnpm.io/installation) | Yes | Corepack: `corepack enable pnpm` |
 | [Git](https://git-scm.com) | Yes | — |
-| [Convex account](https://convex.dev) | Recommended | Free tier for dev. App runs without it, but with limited functionality |
+| [Convex account](https://convex.dev) | Required for auth | Without Convex, static pages render but authentication, orgs, and dashboards cannot function |
 | [Stripe account](https://stripe.com) | Optional | Free in test mode. Needed for subscriptions |
 
 ### Step 1: Clone and install
@@ -223,6 +223,7 @@ All environment variables are documented in [`.env.example`](.env.example). Requ
 | **CMS** | `BASEHUB_TOKEN` | [BaseHub Settings](https://basehub.com/dashboard/settings) |
 | **Analytics** | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_GA_MEASUREMENT_ID` | PostHog project / Google Analytics |
 | **Feature flags** | `FLAGS_SECRET` | Vercel project settings |
+| **Rate limiting** | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | [Upstash Console](https://console.upstash.com) |
 
 ### App URLs (for development)
 
@@ -257,7 +258,7 @@ SITE_URL=http://localhost:3000
 │   ├── design-system/# shadcn/ui component library
 │   ├── email/        # Resend transactional email + React Email templates
 │   ├── feature-flags/# Vercel Flags SDK
-│   ├── i18n/         # next-international dictionaries (6 locales)
+│   ├── internationalization/ # next-international dictionaries (6 locales)
 │   ├── next-config/  # Next.js configuration helpers
 │   ├── notifications/# Knock in-app notifications
 │   ├── observability/# Sentry + BetterStack logging
@@ -399,7 +400,7 @@ export * from "./convex";
 | Structured logging | ✅ | `@repo/observability` + BetterStack |
 | Product analytics | ✅ | `@repo/analytics` + PostHog |
 | Google Analytics | ✅ | `@repo/analytics` |
-| Internationalization | ✅ | `@repo/i18n` (6 locales) |
+| Internationalization | ✅ | `@repo/internationalization` (6 locales) |
 | SEO / JSON-LD | ✅ | `@repo/seo` |
 | File storage | ✅ | `@repo/storage` + Vercel Blob |
 | Dark mode | ✅ | next-themes |
