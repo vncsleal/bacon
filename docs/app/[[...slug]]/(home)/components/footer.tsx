@@ -14,7 +14,7 @@ export const Footer = () => (
         . Maintained by a brilliant community of{" "}
         <a
           className="text-foreground underline"
-          href="https://github.com/vercel/next-forge"
+          href="https://github.com/vncsleal/bacon"
           rel="noopener noreferrer"
           target="_blank"
         >

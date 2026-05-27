@@ -87,7 +87,7 @@ const Page = async (props: PageProps) => {
         <div className="flex flex-row items-center gap-2 border-b pt-2 pb-6">
           <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
           <ViewOptions
-            githubUrl={`https://github.com/haydenbleasel/next-forge/blob/main/docs/content/docs/${page.path}`}
+            githubUrl={`https://github.com/vncsleal/bacon/blob/main/docs/content/docs/${page.path}`}
             markdownUrl={`${page.url}.mdx`}
           />
         </div>
@@ -114,9 +114,9 @@ export async function generateMetadata(props: {
 
   if (!params.slug) {
     return {
-      title: "Production-grade Turborepo template for Next.js apps",
+      title: "bacon — B2B SaaS Starter",
       description:
-        "A monorepo template designed to have everything you need to build your new SaaS app as quick as possible. Authentication, billing, analytics, SEO, database ORM and more — it's all here.",
+        "Production-grade B2B SaaS starter with Better Auth, Convex, Stripe, and more.",
     };
   }
 

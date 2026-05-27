@@ -2,15 +2,10 @@ import {
   apiNoseconeOptions,
   securityMiddleware,
 } from "@repo/security/middleware";
-import type { NextRequest } from "next/server";
-
 const securityHeaders = securityMiddleware(apiNoseconeOptions);
 
-export default function middleware(
-  request: NextRequest
-): Promise<Response> {
-  const result = securityHeaders(request);
-  return result instanceof Promise ? result : Promise.resolve(result);
+export default function middleware(): Promise<Response> {
+  return securityHeaders();
 }
 
 export const config = {

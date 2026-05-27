@@ -30,7 +30,7 @@ export const GET = async (_request: NextRequest, context: GetContext) => {
   }
 
   const { title, description } = page.data;
-  const text = `next-forge ${title} ${description}`;
+  const text = `bacon ${title} ${description}`;
 
   return new ImageResponse(
     <div tw="bg-neutral-100 relative flex flex-col justify-between w-full h-full">
@@ -68,7 +68,7 @@ export const GET = async (_request: NextRequest, context: GetContext) => {
         style={{ fontFamily: "Geist" }}
         tw="flex flex-col bottom-0 left-0 right-0 relative z-10 p-12"
       >
-        <p tw="text-lg m-0 text-black/80 font-semibold">next-forge</p>
+        <p tw="text-lg m-0 text-black/80 font-semibold">bacon</p>
         <h1
           style={{ fontFamily: "Geist Semibold" }}
           tw="my-4 text-6xl font-bold text-black"
