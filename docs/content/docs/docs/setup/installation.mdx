@@ -1,22 +1,22 @@
 ---
 title: Installation
-description: How to setup, install and run next-forge.
+description: How to setup, install and run bacon.
 ---
 
 ## Initialization
 
-Run the `next-forge` init command:
+Run the `bacon` init command:
 
 ```package-install
-npx next-forge@latest init
+npx bacon@latest init
 ```
 
 You will be prompted for the project name and package manager.
 
 ```sh title="Terminal"
-$ npx next-forge@latest init
+$ npx bacon@latest init
 
-┌  Let's start a next-forge project!
+┌  Let's start a bacon project!
 │
 ◇  What is your project named?
 │  my-app
@@ -39,13 +39,13 @@ You will need to scaffold the database using the schema defined in `packages/dat
 npm run migrate
 ```
 
-For more details on the default Prisma configuration (using Neon), refer to the [Database Configuration Guide](https://www.next-forge.com/packages/database#default-configuration).
+For more details on the default Prisma configuration (using Neon), refer to the [Database Configuration Guide](https://www.bacon.com/packages/database#default-configuration).
 
 ## CMS
 
 You will need to setup the CMS. Follow the instructions [here](/packages/cms/overview), but the summary is:
 
-1. Fork the [`basehub/next-forge`](https://basehub.com/basehub/next-forge?fork=1) template
+1. Fork the [`basehub/bacon`](https://basehub.com/basehub/bacon?fork=1) template
 2. Get your Read Token from the "Connect to Your App" page
 3. Add the `BASEHUB_TOKEN` to your [Environment Variables](/docs/setup/env)
 

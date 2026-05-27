@@ -12,8 +12,8 @@ export const VercelButton = () => {
     "demo-image",
     "//images.ctfassets.net/e5382hct74si/2XyyD0ftVZoyj9fHabQB2G/8e5779630676c645214ddb3729d8ff96/opengraph-image.png"
   );
-  url.searchParams.set("demo-title", "next-forge");
-  url.searchParams.set("demo-url", "https://www.next-forge.com/");
+  url.searchParams.set("demo-title", "bacon");
+  url.searchParams.set("demo-url", "https://www.bacon.com/");
   url.searchParams.set(
     "env",
     [
@@ -37,14 +37,14 @@ export const VercelButton = () => {
   );
   url.searchParams.set(
     "envLink",
-    "https://www.next-forge.com/docs/setup/prerequisites"
+    "https://www.bacon.com/docs/setup/prerequisites"
   );
   url.searchParams.set("from", "templates");
-  url.searchParams.set("project-name", "next-forge");
-  url.searchParams.set("repository-name", "next-forge");
+  url.searchParams.set("project-name", "bacon");
+  url.searchParams.set("repository-name", "bacon");
   url.searchParams.set(
     "repository-url",
-    "https://github.com/vercel/next-forge"
+    "https://github.com/vncsleal/bacon"
   );
   url.searchParams.set("root-directory", "apps/app");
   url.searchParams.set("skippable-integrations", "1");

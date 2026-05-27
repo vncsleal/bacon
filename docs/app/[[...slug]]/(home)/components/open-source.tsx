@@ -9,17 +9,17 @@ export const OpenSource = () => (
         <small>Open source</small>
       </div>
       <p className="font-semibold text-xl tracking-tight">
-        next-forge is 100% open source, provided by{" "}
+        bacon is 100% open source and maintained by a community of developers.
+        It is a fork of{" "}
         <a
           className="text-primary underline"
-          href="https://vercel.com"
+          href="https://github.com/vercel/next-forge"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Vercel
-        </a>{" "}
-        and maintained by a community of developers. It was originally developed
-        by{" "}
+          next-forge
+        </a>
+        , originally created by{" "}
         <a
           className="text-primary underline"
           href="https://x.com/haydenbleasel"
@@ -33,7 +33,7 @@ export const OpenSource = () => (
     </div>
     <Button asChild variant="outline">
       <a
-        href="https://github.com/vercel/next-forge"
+        href="https://github.com/vncsleal/bacon"
         rel="noopener noreferrer"
         target="_blank"
       >

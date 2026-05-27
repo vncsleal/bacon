@@ -1,9 +1,9 @@
 ---
 title: Payments
-description: How next-forge handles payments and billing.
+description: How bacon handles payments and billing.
 ---
 
-next-forge uses [Stripe](https://stripe.com/) by default for payments and billing. Implementing Stripe in your project is straightforward.
+bacon uses [Stripe](https://stripe.com/) by default for payments and billing. Implementing Stripe in your project is straightforward.
 
 ## In-App Purchases
 
@@ -19,13 +19,13 @@ await stripe.prices.list();
 
 ## Webhooks
 
-next-forge has a pre-built webhook handler for payment events. Read more about [inbound payment webhooks](/packages/webhooks/inbound#payment-events).
+bacon has a pre-built webhook handler for payment events. Read more about [inbound payment webhooks](/packages/webhooks/inbound#payment-events).
 
 ## Anti-Fraud
 
 As your app grows, you will inevitably encounter credit card fraud. [Stripe Radar](https://stripe.com/radar) is enabled by default if you integrate payments using their SDK as described above. This provides a set of tools to help you detect and prevent fraud.
 
-Stripe Radar supports more [advanced anti-fraud features](https://docs.stripe.com/disputes/prevention/advanced-fraud-detection) if you embed the Stripe JS script in every page load. This is not enabled by default in next-forge, but you can add it as follows:
+Stripe Radar supports more [advanced anti-fraud features](https://docs.stripe.com/disputes/prevention/advanced-fraud-detection) if you embed the Stripe JS script in every page load. This is not enabled by default in bacon, but you can add it as follows:
 
 <Steps>
   <Step title="Edit the layout">
