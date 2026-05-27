@@ -54,6 +54,10 @@
       "pages": ["introduction", "quickstart", "development"]
     },
     {
+      "group": "Deploy",
+      "pages": ["deployment"]
+    },
+    {
       "group": "Essentials",
       "pages": [
         "essentials/markdown",
@@ -79,6 +83,7 @@
   ],
   "footerSocials": {
     "x": "https://x.com/mintlify",
+    "twitter": "https://twitter.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://www.linkedin.com/company/mintlify"
   }

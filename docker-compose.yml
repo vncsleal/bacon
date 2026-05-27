@@ -1,0 +1,58 @@
+# bacon – docker-compose.yml
+#
+# Orchestrates the api service for production-like local testing.
+#
+# Usage:
+#   docker compose up              # Start the API server
+#   docker compose up -d           # Start in detached mode
+#   docker compose down            # Stop all services
+#
+# Build args required:
+#   NEXT_PUBLIC_CONVEX_URL, BETTER_AUTH_SECRET
+# Provide via --build-arg or set in .env.
+
+services:
+  # ── API Server ──────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        - NEXT_PUBLIC_CONVEX_URL=${NEXT_PUBLIC_CONVEX_URL:-}
+        - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?err}
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+    restart: unless-stopped
+
+  # ── Stripe CLI (optional) ───────────────────────────────
+  # Uncomment to test Stripe webhooks locally:
+  # stripe-cli:
+  #   image: stripe/stripe-cli:v1.25
+  #   command:
+  #     - listen
+  #     - "--forward-to=http://api:3002/webhooks/payments"
+  #     - "--api-key=${STRIPE_SECRET_KEY}"
+  #   env_file:
+  #     - .env
+  #   profiles:
+  #     - stripe
+  #   depends_on:
+  #     - api
+
+  # ── Convex Dev (optional) ─────────────────────────────
+  # Uncomment to run a local Convex dev server:
+  # convex-dev:
+  #   image: node:20-alpine
+  #   working_dir: /app
+  #   command: npx convex dev
+  #   volumes:
+  #     - ./packages/database:/app
+  #   ports:
+  #     - "8181:8181"
+  #   profiles:
+  #     - convex
