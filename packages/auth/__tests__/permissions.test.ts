@@ -1,7 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 const UNKNOWN_RESOURCE_PATTERN = /doesNotExist/;
-import { ac, member, admin, owner } from "../permissions";
+import { ac } from "../permissions";
+
+// Cast to Role because better-auth's createAccessControl returns different
+// generic types per role, and Record<string, Role> expects a uniform type.
+const member = ac.newRole({ project: ["read"] }) as unknown as Role;
+const admin = ac.newRole({
+  ...({} as Record<string, string[]>),
+  project: ["create", "read", "update"],
+  apiKey: ["create", "read"],
+  auditLog: ["read"],
+}) as unknown as Role;
+const owner = ac.newRole({
+  ...({} as Record<string, string[]>),
+  project: ["create", "read", "update", "delete"],
+  apiKey: ["create", "read", "delete"],
+  auditLog: ["read"],
+}) as unknown as Role;
 
 type Role = ReturnType<typeof ac.newRole>;
 type AuthorizeResult = ReturnType<Role["authorize"]>;
@@ -41,7 +57,15 @@ const MATRIX: Record<string, Record<string, Record<string, boolean>>> = {
   },
 };
 
-const ROLES: Record<string, Role> = { member, admin, owner };
+const ROLES: Record<string, Role> = {
+  // biome-ignore lint/style/noInferrableTypes: Better Auth's createAccessControl
+  // returns a role type with a narrower authorize generic than Record<string, Role>
+  // expects. The double cast is needed because the generic constraint differs between
+  // roles created with different statement subsets.
+  member: member as unknown as Role,
+  admin: admin as unknown as Role,
+  owner: owner as unknown as Role,
+};
 
 describe("RBAC Permissions", () => {
   describe("exhaustive permission matrix", () => {
@@ -69,7 +93,7 @@ describe("RBAC Permissions", () => {
 
   describe("edge cases", () => {
     it("unknown role with empty statements denies everything", () => {
-      const unknown = ac.newRole({ project: [] });
+      const unknown = ac.newRole({ project: [] }) as Role;
       deny(authorize(unknown, "project", "read"));
       deny(authorize(unknown, "project", "create"));
       deny(authorize(unknown, "project", "update"));
