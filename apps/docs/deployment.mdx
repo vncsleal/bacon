@@ -1,0 +1,297 @@
+---
+title: 'Deployment'
+description: 'Deploy bacon to production with Docker, Vercel, or your own infrastructure'
+---
+
+This guide covers deployment strategies for the bacon monorepo. The stack is designed for Vercel (zero-config for `apps/app` and `apps/web`), with a Docker-based API server for webhooks, cron jobs, and background processing.
+
+## Architecture Overview
+
+bacon has three deployable applications:
+
+| App | Port | Purpose | Recommended Platform |
+|-----|------|---------|---------------------|
+| `apps/app` | 3000 | Authenticated dashboard | Vercel |
+| `apps/web` | 3001 | Marketing site + CMS | Vercel |
+| `apps/api` | 3002 | Webhooks, cron, health | Docker / Vercel |
+
+All three share a single Convex deployment as the database and a single Better Auth configuration.
+
+---
+
+## Prerequisites
+
+Before deploying, you need:
+
+1. A **Convex deployment** — create one at [convex.dev](https://convex.dev) and copy `CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL`
+2. A **Better Auth secret** — generate with `openssl rand -base64 32`
+3. **(Optional) Stripe account** — for subscription billing
+4. **(Optional) Resend API key** — for transactional email
+5. **(Optional) Arcjet key** — for rate limiting and bot protection
+
+---
+
+## Environment Variables
+
+All environment variables are documented in `.env.example` at the project root. Copy-paste the relevant subset for each app:
+
+<AccordionGroup>
+  <Accordion title="Required for all apps">
+    - `CONVEX_DEPLOYMENT` — e.g. `dev:your-deployment-name`
+    - `NEXT_PUBLIC_CONVEX_URL` — e.g. `https://your-deployment.convex.cloud`
+    - `BETTER_AUTH_SECRET` — random 32-char base64 string
+    - `SITE_URL` — canonical URL of the deployed app
+    - `NEXT_PUBLIC_APP_URL` — URL of the dashboard app
+    - `NEXT_PUBLIC_WEB_URL` — URL of the marketing site
+    - `NEXT_PUBLIC_API_URL` — URL of the API server
+  </Accordion>
+  <Accordion title="Required for apps/api (Docker)">
+    - All variables in `apps/api/.env.example`
+    - `CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL` are required at **build time** (Next.js evaluates them during `next build`)
+  </Accordion>
+  <Accordion title="Optional per feature">
+    | Feature | Variables |
+    |---------|-----------|
+    | Stripe billing | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_FREE_PRICE_ID`, `STRIPE_PRO_PRICE_ID` |
+    | Email (Resend) | `RESEND_TOKEN`, `RESEND_FROM` |
+    | Analytics (PostHog) | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` |
+    | Analytics (Google) | `NEXT_PUBLIC_GA_MEASUREMENT_ID` |
+    | Observability | `BETTERSTACK_API_KEY`, `BETTERSTACK_URL` |
+    | Rate limiting | `ARCJET_KEY` |
+    | Feature flags | `FLAGS_SECRET` |
+    | CMS (BaseHub) | `BASEHUB_TOKEN` |
+    | Webhooks (Svix) | `SVIX_TOKEN` |
+    | Collaboration | `LIVEBLOCKS_SECRET` |
+    | Notifications | `KNOCK_SECRET_API_KEY`, `NEXT_PUBLIC_KNOCK_API_KEY`, `NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID` |
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Docker Deployment (apps/api)
+
+The API server (`apps/api`) is a Next.js app configured with `output: "standalone"` for Docker deployment. It handles Stripe webhooks, auth webhooks, cron jobs, and health checks.
+
+### Building the Image
+
+```bash
+# From the monorepo root
+docker build \
+  -t bacon-api:latest \
+  -f apps/api/Dockerfile \
+  --build-arg CONVEX_DEPLOYMENT=dev:your-deployment \
+  --build-arg NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud \
+  --build-arg SITE_URL=https://api.yourdomain.com \
+  --build-arg BETTER_AUTH_SECRET=your-secret \
+  .
+```
+
+Build arguments are required because Next.js evaluates environment variables during the build phase. The Dockerfile uses **Turborepo prune** (`turbo prune api --docker`) to extract only the files needed for the API, keeping the image small.
+
+<AccordionGroup>
+  <Accordion title="Why --build-arg is needed">
+    Next.js inlines environment variables prefixed with `NEXT_PUBLIC_` at build time.
+    The Dockerfile's builder stage must provide `CONVEX_DEPLOYMENT`, `NEXT_PUBLIC_CONVEX_URL`,
+    `SITE_URL`, and `BETTER_AUTH_SECRET` via build args. Without these, the build will fail
+    because the Convex client and Better Auth configuration reference them.
+  </Accordion>
+  <Accordion title="Image size optimization">
+    The multi-stage build (pruner → deps → builder → runner) produces a minimal production
+    image (~200 MB). The runner stage uses `node:20-alpine` and only contains:
+    - The Next.js standalone server (`server.js`)
+    - Static assets (`.next/static/`, `public/`)
+    - Only production `node_modules` (dev dependencies excluded)
+  </Accordion>
+</AccordionGroup>
+
+### Running with Docker Compose
+
+```bash
+# Start the API
+docker compose up
+
+# Start in background
+docker compose up -d
+
+# Stop
+docker compose down
+```
+
+The `docker-compose.yml` at the project root orchestrates the API server and provides an optional Stripe CLI service for local webhook testing.
+
+<CodeGroup>
+```yaml docker-compose.yml
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        - CONVEX_DEPLOYMENT=${CONVEX_DEPLOYMENT:?err}
+        - NEXT_PUBLIC_CONVEX_URL=${NEXT_PUBLIC_CONVEX_URL:?err}
+        - SITE_URL=${SITE_URL:-http://localhost:3002}
+        - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?err}
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+    restart: unless-stopped
+```
+</CodeGroup>
+
+### Production Deployment (non-Vercel)
+
+For deploying to your own infrastructure (Fly.io, Railway, AWS ECS, etc.):
+
+1. Build the Docker image as shown above
+2. Push to your container registry
+3. Set all environment variables at runtime (the runner ignores build args at runtime)
+4. Ensure `PORT` env var matches the container port
+5. Set up a reverse proxy (nginx, Caddy) or use the platform's load balancer
+
+---
+
+## Vercel Deployment (apps/app + apps/web)
+
+The dashboard (`apps/app`) and marketing site (`apps/web`) are designed for Vercel with minimal configuration.
+
+### Steps
+
+1. **Push to GitHub** — commit and push your fork
+2. **Import to Vercel** — use the Vercel dashboard or CLI:
+   ```bash
+   vercel --prod
+   ```
+3. **Configure root directory** — for monorepo support, Vercel auto-detects Turborepo projects
+4. **Set environment variables** — add all variables from `.env.example` in the Vercel dashboard
+5. **Deploy** — Vercel will run `turbo build` automatically
+
+### Framework Presets
+
+| App | Vercel Preset | Build Command | Output Directory |
+|-----|--------------|--------------|------------------|
+| `apps/app` | Next.js | `turbo build --filter=app` | `.next` |
+| `apps/web` | Next.js | `turbo build --filter=web` | `.next` |
+
+Vercel ignores `output: "standalone"` in `next.config.ts` — it uses its own serverless build process.
+
+### Vercel Cron Jobs
+
+The API app's `vercel.json` includes a cron job definition:
+
+```json
+{
+  "crons": [
+    {
+      "path": "/cron/keep-alive",
+      "schedule": "0 1 * * *"
+    }
+  ]
+}
+```
+
+When deploying `apps/api` to Vercel, this cron keeps the serverless function warm. The cron endpoint simply responds `OK` — Convex is always-on.
+
+---
+
+## Content Security Policy
+
+bacon uses [Nosecone](https://docs.arcjet.com/nosecone/quick-start) (by Arcjet) for security headers, including CSP. The configuration lives in `packages/security/middleware.ts`.
+
+### How It Works
+
+The CSP is built dynamically based on which environment variables are set:
+
+| Env Var Set | CSP Directives Added |
+|-------------|----------------------|
+| `NEXT_PUBLIC_CONVEX_URL` | `connect-src` + `wss:` for Convex |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `script-src: googletagmanager.com`, `connect-src: google-analytics.com` |
+| `BASEHUB_TOKEN` | `img-src: assets.basehub.com`, `connect-src: basehub.com` |
+| `NEXT_PUBLIC_POSTHOG_KEY` | `connect-src: us.i.posthog.com` |
+| `VERCEL` | `connect-src: va.vercel.com` |
+
+In production (`NODE_ENV=production`), `upgrade-insecure-requests` is enabled.
+
+### Per-App Behaviour
+
+- **apps/web** — full CSP with analytics, CMS images, and fonts
+- **apps/app** — CSP with Convex, analytics, and dashboard features
+- **apps/api** — headless, CSP is very restrictive (defaults only)
+
+### Extending the CSP
+
+To add custom sources, edit `packages/security/middleware.ts` and add entries to the respective directive arrays in `buildCspDirectives()`:
+
+```typescript
+if (process.env.MY_CUSTOM_SERVICE_URL) {
+  connectSrc.push(process.env.MY_CUSTOM_SERVICE_URL);
+  scriptSrc.push("https://cdn.my-service.com");
+}
+```
+
+---
+
+## CI/CD Integration
+
+The project includes a CI workflow (`.github/workflows/ci.yml`) that runs on every pull request:
+
+1. **Install** — `pnpm install --frozen-lockfile`
+2. **Typecheck** — `turbo typecheck`
+3. **Lint** — `turbo lint` (via ultracite)
+4. **Build** — `turbo build --filter=!docs --filter=!email`
+5. **Test** — `turbo test`
+6. **E2E** — Playwright smoke test
+
+### Docker CI Pipeline
+
+For teams deploying the API via Docker, add a CI step to build and push the image:
+
+```yaml
+- name: Build and push API Docker image
+  uses: docker/build-push-action@v6
+  with:
+    context: .
+    file: apps/api/Dockerfile
+    build-args: |
+      CONVEX_DEPLOYMENT=${{ secrets.CONVEX_DEPLOYMENT }}
+      NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+      SITE_URL=${{ secrets.SITE_URL }}
+      BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+    tags: |
+      ${{ env.REGISTRY }}/bacon-api:latest
+      ${{ env.REGISTRY }}/bacon-api:${{ github.sha }}
+```
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Docker build fails with 'Missing CONVEX_DEPLOYMENT'">
+    All four build args are required. Pass them with `--build-arg`:
+    ```bash
+    --build-arg CONVEX_DEPLOYMENT=dev:your-deployment \
+    --build-arg NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud \
+    --build-arg SITE_URL=https://api.yourdomain.com \
+    --build-arg BETTER_AUTH_SECRET=your-secret
+    ```
+  </Accordion>
+  <Accordion title="Vercel deployment succeeds but pages show 404">
+    Ensure `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_WEB_URL`, and `NEXT_PUBLIC_API_URL` are set
+    correctly in the Vercel project environment variables. These are required by
+    `@repo/next-config/keys` and the Better Auth configuration.
+  </Accordion>
+  <Accordion title="CSP is blocking legitimate resources">
+    Check the browser console for CSP violation reports. The blocked URLs tell you exactly
+    which directive needs to be extended. Add the missing sources in
+    `packages/security/middleware.ts` → `buildCspDirectives()`.
+  </Accordion>
+  <Accordion title="API returns 429 Too Many Requests">
+    Arcjet rate limiting is active by default on protected routes. Configure the limits in
+    the respective route handlers. Set `ARCJET_KEY` to enable; without it, rate limiting is
+    bypassed (safe for early development).
+  </Accordion>
+</AccordionGroup>
