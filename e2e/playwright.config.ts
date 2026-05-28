@@ -25,13 +25,13 @@ export default defineConfig({
   webServer: process.env.CI
     ? [
         {
-          command: `PORT=${WEB_PORT} pnpm --filter=web start`,
+          command: `pnpm --filter=web exec next start -p ${WEB_PORT}`,
           url: `http://localhost:${WEB_PORT}`,
           reuseExistingServer: true,
           timeout: 30_000,
         },
         {
-          command: `PORT=${APP_PORT} pnpm --filter=app start`,
+          command: `pnpm --filter=app exec next start -p ${APP_PORT}`,
           url: `http://localhost:${APP_PORT}`,
           reuseExistingServer: true,
           timeout: 30_000,

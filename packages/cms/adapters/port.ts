@@ -109,12 +109,10 @@ export type CmsUiComponents = {
   readonly Feed: (props: FeedProps) => Promise<ReactNode>;
   readonly Toolbar: () => null;
   readonly Image: (props: ImageProps) => ReactNode;
-  readonly Body: (
-    props: {
-      readonly content: unknown[];
-      readonly components?: Record<string, unknown>;
-    }
-  ) => ReactNode;
+  readonly Body: (props: {
+    readonly content: unknown[];
+    readonly components?: Record<string, unknown>;
+  }) => ReactNode;
 };
 
 // Data queries are handled by the existing index.ts which already guards

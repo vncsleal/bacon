@@ -1,5 +1,5 @@
-import { Tweet } from 'react-tweet';
-import { clsx } from 'clsx';
+import { clsx } from "clsx";
+import { Tweet } from "react-tweet";
 
 const tweets = [
   "1853560800050651632",
@@ -72,7 +72,9 @@ export const Social = () => (
       </div>
     </div>
     <div className="columns-1 gap-4 p-8 sm:col-span-2 md:columns-2">
-    <style dangerouslySetInnerHTML={{__html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
     .tweet-customizer-wrapper .react-tweet-theme {
   --tweet-container-margin: 1.5rem 0;
   
@@ -164,9 +166,14 @@ export const Social = () => (
   --tweet-verified-blue-color: #fff;
 }
 
-    `}} />
+    `,
+        }}
+      />
       {tweets.map((tweet, index) => (
-        <div key={tweet} className={clsx(index ? '' : 'sm:-mt-6', 'tweet-customizer-wrapper')}>
+        <div
+          className={clsx(index ? "" : "sm:-mt-6", "tweet-customizer-wrapper")}
+          key={tweet}
+        >
           <Tweet id={tweet} />
         </div>
       ))}

@@ -1,8 +1,4 @@
-import {
-  defaults,
-  type Options,
-  withVercelToolbar,
-} from "@nosecone/next";
+import { defaults, type Options, withVercelToolbar } from "@nosecone/next";
 import type { Source } from "nosecone";
 
 // biome-ignore lint/performance/noBarrelFile: "re-exporting"
@@ -37,7 +33,10 @@ function asCspArray(value: unknown, directiveName: string): CspValue[] {
 function buildCspDirectives() {
   const d = defaultCsp.directives;
 
-  const connectSrc = asCspArray(d["connect-src"] ?? d.connectSrc, "connect-src");
+  const connectSrc = asCspArray(
+    d["connect-src"] ?? d.connectSrc,
+    "connect-src"
+  );
   const scriptSrc = asCspArray(d["script-src"] ?? d.scriptSrc, "script-src");
   const imgSrc = asCspArray(d["img-src"] ?? d.imgSrc, "img-src");
   const fontSrc = asCspArray(d["font-src"] ?? d.fontSrc, "font-src");
@@ -48,7 +47,10 @@ function buildCspDirectives() {
   if (process.env.NEXT_PUBLIC_CONVEX_URL) {
     try {
       const { host } = new URL(process.env.NEXT_PUBLIC_CONVEX_URL);
-      connectSrc.push(`https://${host}` as CspValue, `wss://${host}` as CspValue);
+      connectSrc.push(
+        `https://${host}` as CspValue,
+        `wss://${host}` as CspValue
+      );
     } catch {
       // Malformed URL — skip.
     }
@@ -59,7 +61,7 @@ function buildCspDirectives() {
     scriptSrc.push("https://www.googletagmanager.com");
     connectSrc.push(
       "https://www.google-analytics.com",
-      "https://analytics.google.com",
+      "https://analytics.google.com"
     );
   }
 
@@ -73,7 +75,7 @@ function buildCspDirectives() {
   if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
     connectSrc.push(
       "https://us.i.posthog.com",
-      "https://us-assets.i.posthog.com",
+      "https://us-assets.i.posthog.com"
     );
   }
 

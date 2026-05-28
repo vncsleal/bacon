@@ -1,15 +1,15 @@
+import { stripe } from "@better-auth/stripe";
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
+import { sendVerificationOTPEmail } from "@repo/email";
+import { betterAuth } from "better-auth";
+import { apiKey, emailOTP, organization } from "better-auth/plugins";
+import { v } from "convex/values";
+import Stripe from "stripe";
+import { ac, admin, member, owner } from "../../auth/permissions";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import { v } from "convex/values";
-import { betterAuth } from "better-auth";
-import { organization, apiKey, emailOTP } from "better-auth/plugins";
-import { ac, owner, admin, member } from "../../auth/permissions";
-import { stripe } from "@better-auth/stripe";
-import Stripe from "stripe";
-import { sendVerificationOTPEmail } from "@repo/email";
 import authSchema from "./betterAuth/schema";
 
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
@@ -63,10 +63,7 @@ export const createAuth = (
           if (type !== "email-verification") {
             return;
           }
-          const { success, error } = await sendVerificationOTPEmail(
-            email,
-            otp
-          );
+          const { success, error } = await sendVerificationOTPEmail(email, otp);
           if (!success) {
             // Keeping raw console.error here — adding the full
             // @repo/observability dependency just for this one-off
@@ -121,9 +118,7 @@ export const createAuth = (
 
 export const getCurrentUser = query({
   args: {},
-  handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
-  },
+  handler: async (ctx) => authComponent.getAuthUser(ctx),
 });
 
 export const getUsersByIds = query({
@@ -150,6 +145,11 @@ export const searchUsersByName = query({
       ],
       paginationOpts: { numItems: 20, cursor: null },
     });
-    return (result.page as Array<{ _id: string; name: string; email: string; image?: string | null }>);
+    return result.page as Array<{
+      _id: string;
+      name: string;
+      email: string;
+      image?: string | null;
+    }>;
   },
 });

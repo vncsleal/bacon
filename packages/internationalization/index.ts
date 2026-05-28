@@ -1,7 +1,7 @@
 import "server-only";
+import { log } from "@repo/observability/log";
 import type en from "./dictionaries/en.json";
 import languine from "./languine.json" with { type: "json" };
-import { log } from "@repo/observability/log";
 
 export const locales = [
   languine.locale.source,
@@ -18,7 +18,9 @@ const dictionaries: Record<string, () => Promise<Dictionary>> =
         import(`./dictionaries/${locale}.json`)
           .then((mod) => mod.default)
           .catch((_err) => {
-            log.warn(`Failed to load dictionary for locale "${locale}", falling back to English`);
+            log.warn(
+              `Failed to load dictionary for locale "${locale}", falling back to English`
+            );
             return import("./dictionaries/en.json").then((mod) => mod.default);
           }),
     ])
@@ -34,7 +36,9 @@ export const getDictionary = async (locale: string): Promise<Dictionary> => {
   try {
     return await dictionaries[normalizedLocale]();
   } catch (_error) {
-    log.warn(`getDictionary: failed to load dictionary for "${normalizedLocale}", falling back to English`);
+    log.warn(
+      `getDictionary: failed to load dictionary for "${normalizedLocale}", falling back to English`
+    );
     return dictionaries.en();
   }
 };

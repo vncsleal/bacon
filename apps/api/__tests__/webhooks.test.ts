@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const HTTP_OK = 200;
 const HTTP_INTERNAL_ERROR = 500;
@@ -39,18 +39,21 @@ vi.mock("@repo/payments", () => ({
   },
 }));
 
-import { POST as paymentsPOST } from "../app/webhooks/payments/route";
-import { env } from "@/env";
 import { headers } from "next/headers";
+import { POST as paymentsPOST } from "../app/webhooks/payments/route";
 
 describe("Payments Webhook", () => {
   beforeEach(() => {
-    env.STRIPE_WEBHOOK_SECRET = "whsec_test_secret";
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test_secret");
     vi.mocked(headers).mockReset();
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it("returns Not configured when STRIPE_WEBHOOK_SECRET is not set", async () => {
-    env.STRIPE_WEBHOOK_SECRET = undefined as unknown as string;
+    vi.stubEnv("STRIPE_WEBHOOK_SECRET", "");
 
     const request = new Request("http://localhost:3002", { method: "POST" });
     const response = await paymentsPOST(request);

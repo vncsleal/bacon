@@ -20,9 +20,7 @@ const base = arcjetKey
   ? arcjet({
       key: arcjetKey,
       characteristics: ["ip.src"],
-      rules: [
-        shield({ mode: "LIVE" }),
-      ],
+      rules: [shield({ mode: "LIVE" })],
     })
   : null;
 
@@ -91,7 +89,10 @@ export const withRateLimit = async (
     return null;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Access denied";
-    const status = message === "Rate limit exceeded" ? HTTP_TOO_MANY_REQUESTS : HTTP_FORBIDDEN;
+    const status =
+      message === "Rate limit exceeded"
+        ? HTTP_TOO_MANY_REQUESTS
+        : HTTP_FORBIDDEN;
     return new Response(message, { status });
   }
 };

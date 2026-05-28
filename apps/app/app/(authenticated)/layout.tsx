@@ -1,12 +1,12 @@
-import { createAuth } from "@repo/database/convex/auth";
 import { getToken } from "@convex-dev/better-auth/nextjs";
+import { api } from "@repo/database/convex/_generated/api";
+import { createAuth } from "@repo/database/convex/auth";
 import { SidebarProvider } from "@repo/design-system/components/ui/sidebar";
 import { showBetaFeature } from "@repo/feature-flags";
 import { secure } from "@repo/security";
 import { fetchQuery } from "convex/nextjs";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
-import { api } from "@repo/database/convex/_generated/api";
 import { env } from "@/env";
 import { NotificationsProvider } from "./components/notifications-provider";
 import { GlobalSidebar } from "./components/sidebar";

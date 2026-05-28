@@ -1,6 +1,6 @@
 import { legal } from "@repo/cms";
-import { Feed } from "@repo/cms/components/feed";
 import type { LegalFeedQueryResult } from "@repo/cms/adapters/port";
+import { Feed } from "@repo/cms/components/feed";
 import { Status } from "@repo/observability/status";
 import Link from "next/link";
 import { env } from "@/env";
@@ -77,9 +77,7 @@ export const Footer = () => (
                                 : undefined
                             }
                             target={
-                              item.href.includes("http")
-                                ? "_blank"
-                                : undefined
+                              item.href.includes("http") ? "_blank" : undefined
                             }
                           >
                             <span className="text-xl">{item.title}</span>

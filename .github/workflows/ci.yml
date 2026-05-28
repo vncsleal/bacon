@@ -41,18 +41,14 @@ jobs:
           STRIPE_SECRET_KEY: sk_dummy_ci_secret_key_for_build
         run: pnpm exec turbo build --filter '!storybook'
 
+      - name: Archive build outputs
+        run: tar czf next-build.tar.gz apps/app/.next apps/web/.next
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: next-build
-          path: |
-            apps/app/.next
-            apps/web/.next
-            node_modules/
-            pnpm-lock.yaml
-            turbo.json
-            package.json
-            apps/*/package.json
+          path: next-build.tar.gz
           retention-days: 1
 
   e2e:
@@ -78,6 +74,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: next-build
+          path: .
+
+      - name: Extract build outputs
+        run: tar xzf next-build.tar.gz
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
@@ -87,7 +87,6 @@ jobs:
         env:
           CI: true
           BETTER_AUTH_SECRET: dummy-ci-secret-32-chars-long-for-build
-          NEXT_PUBLIC_CONVEX_URL: ""
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           NEXT_PUBLIC_WEB_URL: http://localhost:3001
 

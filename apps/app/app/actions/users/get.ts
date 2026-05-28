@@ -1,7 +1,7 @@
 "use server";
-import { createAuth } from "@repo/database/convex/auth";
-import { api } from "@repo/database/convex/_generated/api";
 import { getToken } from "@convex-dev/better-auth/nextjs";
+import { api } from "@repo/database/convex/_generated/api";
+import { createAuth } from "@repo/database/convex/auth";
 import { fetchQuery } from "convex/nextjs";
 
 const COLORS = [
@@ -40,11 +40,20 @@ export const getUsers = async (
     );
 
     return {
-      data: users.map((user: { name?: string | null; email?: string | null; image?: string | null }, i: number) => ({
-        name: user.name ?? user.email ?? "",
-        avatar: user.image ?? undefined,
-        color: COLORS[i % COLORS.length],
-      })),
+      data: users.map(
+        (
+          user: {
+            name?: string | null;
+            email?: string | null;
+            image?: string | null;
+          },
+          i: number
+        ) => ({
+          name: user.name ?? user.email ?? "",
+          avatar: user.image ?? undefined,
+          color: COLORS[i % COLORS.length],
+        })
+      ),
     };
   } catch (error) {
     return { error };
