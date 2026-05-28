@@ -87,7 +87,6 @@ jobs:
         env:
           CI: true
           BETTER_AUTH_SECRET: dummy-ci-secret-32-chars-long-for-build
-          NEXT_PUBLIC_CONVEX_URL: ""
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           NEXT_PUBLIC_WEB_URL: http://localhost:3001
 
