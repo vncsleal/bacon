@@ -45,9 +45,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: next-build
+          include-hidden-files: true
           path: |
             apps/app/.next
             apps/web/.next
+            !apps/**/.next/cache/**
             pnpm-lock.yaml
             turbo.json
             package.json
