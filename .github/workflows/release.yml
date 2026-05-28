@@ -2,9 +2,12 @@
 name: Release
 
 # The event that will trigger the action
-on:
-  push:
-    branches: [main]
+# Disabled: requires auto release tooling + NPM_TOKEN configured.
+# Enable by uncommenting below once release process is set up.
+# on:
+#   push:
+#     branches: [main]
+on: workflow_dispatch
 
 # what the action will do
 jobs:
