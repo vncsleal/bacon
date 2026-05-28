@@ -48,7 +48,6 @@ jobs:
           path: |
             apps/app/.next
             apps/web/.next
-            node_modules/
             pnpm-lock.yaml
             turbo.json
             package.json
