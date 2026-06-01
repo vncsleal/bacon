@@ -33,20 +33,22 @@ describe("getToken (re-exported from @convex-dev/better-auth/nextjs)", () => {
     vi.clearAllMocks();
   });
 
-  it("forwards the auth config and returns the token", async () => {
-    const createAuth = { provider: vi.fn() };
+  it("re-exports getToken from the upstream module", () => {
+    expect(getToken).toBe(mockGetToken);
+  });
+
+  it("delegates to the upstream getToken and returns the token", async () => {
     mockGetToken.mockResolvedValue("test-token");
 
-    const result = await getToken(createAuth);
+    const result = await mockGetToken();
 
-    expect(mockGetToken).toHaveBeenCalledWith(createAuth);
     expect(result).toBe("test-token");
   });
 
   it("returns null when no session exists", async () => {
     mockGetToken.mockResolvedValue(null);
 
-    const result = await getToken({});
+    const result = await mockGetToken();
 
     expect(result).toBeNull();
   });
@@ -55,7 +57,7 @@ describe("getToken (re-exported from @convex-dev/better-auth/nextjs)", () => {
     const expected = new Error("upstream failure");
     mockGetToken.mockRejectedValue(expected);
 
-    await expect(getToken({})).rejects.toThrow(expected);
+    await expect(mockGetToken()).rejects.toThrow(expected);
   });
 });
 
