@@ -2,12 +2,12 @@
 
 import type { ReactNode } from "react";
 
-type AuthProviderProperties = {
+interface AuthProviderProperties {
   children: ReactNode;
+  helpUrl?: string;
   privacyUrl?: string;
   termsUrl?: string;
-  helpUrl?: string;
-};
+}
 
 export const AuthProvider = ({ children }: AuthProviderProperties) => (
   <>{children}</>

@@ -8,14 +8,14 @@ export type PostMetaAuthors = readonly {
   readonly xUrl: string | null;
 }[];
 
-export type PostMetaImage = {
+export interface PostMetaImage {
+  readonly alt: string | null;
+  readonly height: number;
   readonly url: string;
   readonly width: number;
-  readonly height: number;
-  readonly alt: string | null;
-};
+}
 
-export type PostMeta = {
+export interface PostMeta {
   readonly _slug: string;
   readonly _title: string;
   readonly authors: PostMetaAuthors;
@@ -23,13 +23,13 @@ export type PostMeta = {
   readonly date: string;
   readonly description: string;
   readonly image: PostMetaImage | null;
-};
+}
 
-export type PostTocEntry = {
+export interface PostTocEntry {
+  readonly depth: number;
   readonly id: string;
   readonly text: string;
-  readonly depth: number;
-};
+}
 
 export type Post = PostMeta & {
   readonly body: {
@@ -42,11 +42,11 @@ export type Post = PostMeta & {
   };
 };
 
-export type LegalPostMeta = {
+export interface LegalPostMeta {
   readonly _slug: string;
   readonly _title: string;
   readonly description: string;
-};
+}
 
 export type LegalPost = LegalPostMeta & {
   readonly body: {
@@ -62,58 +62,58 @@ export type LegalPost = LegalPostMeta & {
 // Feed query fragments always include image — guaranteed by the fragment shape.
 // Null would mean the fragment itself returned null, which basehub doesn't do
 // when the field is selected.
-export type BlogFeedItem = {
+export interface BlogFeedItem {
   readonly _slug: string;
   readonly _title: string;
   readonly date: string;
   readonly description: string;
   readonly image: PostMetaImage;
-};
+}
 
 // Feed query fragments always include image — guaranteed by the fragment shape.
 export type BlogFeedItemDetail = Post & {
   readonly image: PostMetaImage;
 };
 
-export type BlogFeedQueryResult = {
+export interface BlogFeedQueryResult {
   readonly blog: {
     readonly posts: {
       readonly items: readonly BlogFeedItem[];
       readonly item: BlogFeedItemDetail | null;
     };
   };
-};
+}
 
-export type LegalFeedQueryResult = {
+export interface LegalFeedQueryResult {
   readonly legalPages: {
     readonly items: readonly LegalPostMeta[];
     readonly item: LegalPost | null;
   };
-};
+}
 
-export type FeedProps = {
-  queries: readonly unknown[];
+export interface FeedProps {
   children: (data: readonly unknown[]) => ReactNode | Promise<ReactNode>;
-};
+  queries: readonly unknown[];
+}
 
-export type ImageProps = {
-  readonly src: string;
-  readonly width: number;
-  readonly height: number;
+export interface ImageProps {
   readonly alt: string;
   readonly className?: string;
+  readonly height: number;
   readonly priority?: boolean;
-};
+  readonly src: string;
+  readonly width: number;
+}
 
-export type CmsUiComponents = {
-  readonly Feed: (props: FeedProps) => Promise<ReactNode>;
-  readonly Toolbar: () => null;
-  readonly Image: (props: ImageProps) => ReactNode;
+export interface CmsUiComponents {
   readonly Body: (props: {
     readonly content: unknown[];
     readonly components?: Record<string, unknown>;
   }) => ReactNode;
-};
+  readonly Feed: (props: FeedProps) => Promise<ReactNode>;
+  readonly Image: (props: ImageProps) => ReactNode;
+  readonly Toolbar: () => null;
+}
 
 // Data queries are handled by the existing index.ts which already guards
 // against missing BASEHUB_TOKEN (returns empty arrays / null). No adapter

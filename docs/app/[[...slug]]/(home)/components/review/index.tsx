@@ -17,7 +17,7 @@ export const Review = () => (
     </p>
     <div className="space-between flex items-center justify-between gap-4">
       <div className="flex items-center gap-2">
-        <div className="-space-x-1 flex items-center">
+        <div className="flex items-center -space-x-1">
           <Image
             alt=""
             className="rounded-full ring-2 ring-background"

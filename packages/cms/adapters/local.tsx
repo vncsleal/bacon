@@ -203,7 +203,7 @@ const FIXTURE_LEGAL_PAGES: LegalPost[] = [
   },
 ];
 
-type FixtureShape = {
+interface FixtureShape {
   readonly blog: {
     readonly posts: {
       readonly items: PostMeta[];
@@ -214,7 +214,7 @@ type FixtureShape = {
     readonly items: LegalPostMeta[];
     readonly item: LegalPost | null;
   };
-};
+}
 
 const buildFixture = (): FixtureShape => ({
   blog: {

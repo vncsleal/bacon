@@ -9,16 +9,16 @@ const token = keys().RESEND_TOKEN;
 
 export const resend = token ? new Resend(token) : null;
 
-type SendEmailParams = {
-  to: string;
-  subject: string;
+interface SendEmailParams {
   react: ReactElement;
-};
+  subject: string;
+  to: string;
+}
 
-type SendEmailResult = {
-  success: boolean;
+interface SendEmailResult {
   error?: string;
-};
+  success: boolean;
+}
 
 export async function sendEmail({
   to,

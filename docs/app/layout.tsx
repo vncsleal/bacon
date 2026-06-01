@@ -23,9 +23,9 @@ const mono = createMono({
   weight: "variable",
 });
 
-type LayoutProps = {
+interface LayoutProps {
   readonly children: ReactNode;
-};
+}
 
 const Layout = ({ children }: LayoutProps) => (
   <html

@@ -35,7 +35,7 @@ export const getDictionary = async (locale: string): Promise<Dictionary> => {
 
   try {
     return await dictionaries[normalizedLocale]();
-  } catch (_error) {
+  } catch {
     log.warn(
       `getDictionary: failed to load dictionary for "${normalizedLocale}", falling back to English`
     );

@@ -11,10 +11,10 @@ import {
   Text,
 } from "@react-email/components";
 
-type VerifyEmailTemplateProps = {
+interface VerifyEmailTemplateProps {
   readonly name: string;
   readonly otp: string;
-};
+}
 
 export const VerifyEmailTemplate = ({
   name,

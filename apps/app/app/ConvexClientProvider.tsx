@@ -8,9 +8,9 @@ import type { ReactNode } from "react";
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
 const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
-type Properties = {
+interface Properties {
   readonly children: ReactNode;
-};
+}
 
 export function ConvexClientProvider({ children }: Properties) {
   if (!convex) {

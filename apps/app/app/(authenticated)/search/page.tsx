@@ -9,11 +9,11 @@ const DEMO_PAGES = [
   { _id: "demo-3", name: "Configuration" },
 ];
 
-type SearchPageProperties = {
+interface SearchPageProperties {
   searchParams: Promise<{
     q: string;
   }>;
-};
+}
 
 export const generateMetadata = async ({
   searchParams,

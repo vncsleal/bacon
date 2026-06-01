@@ -10,11 +10,11 @@ import { keys } from "./keys";
 
 const arcjetKey = keys().ARCJET_KEY;
 
-type RateLimitOptions = {
+interface RateLimitOptions {
   max: number;
-  window: string;
   mode?: "LIVE" | "DRY_RUN";
-};
+  window: string;
+}
 
 const base = arcjetKey
   ? arcjet({
