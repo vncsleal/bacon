@@ -1,7 +1,7 @@
 "use client";
 
-import { ErrorPage } from "@/components/error-page";
 import type { ErrorPageProperties } from "@/components/error-page";
+import { ErrorPage } from "@/components/error-page";
 
 const RootError = (props: ErrorPageProperties) => (
   <ErrorPage

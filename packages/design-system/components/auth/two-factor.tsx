@@ -3,10 +3,5 @@
 import { AuthView } from "@bettercone/ui";
 
 export function TwoFactor() {
-  return (
-    <AuthView
-      view="TWO_FACTOR"
-      redirectTo="/dashboard"
-    />
-  );
+  return <AuthView redirectTo="/dashboard" view="TWO_FACTOR" />;
 }

@@ -1,8 +1,8 @@
 import { blog } from "@repo/cms";
+import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { Feed } from "@repo/cms/components/feed";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Dictionary } from "@repo/internationalization";
-import type { BlogFeedQueryResult } from "@repo/cms/adapters/port";
 import { MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { env } from "@/env";

@@ -16,10 +16,10 @@ export const getNotificationsClient = (): Knock => {
     );
   }
 
-  client = new Knock(key);
+  client = new Knock({ apiKey: key });
   return client;
 };
 
 // Direct export for backwards compatibility — callers must null-check.
 // Prefer getNotificationsClient() for a clear error when unconfigured.
-export const notifications = key ? new Knock(key) : null;
+export const notifications = key ? new Knock({ apiKey: key }) : null;

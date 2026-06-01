@@ -7,7 +7,12 @@ export default defineConfig({
       provider: "v8",
       enabled: true,
       include: ["*.ts", "*.tsx", "better-auth/**/*.ts", "components/**/*.tsx"],
-      exclude: ["__tests__/**", "node_modules/**", "vitest.config.*", "tsconfig.json"],
+      exclude: [
+        "__tests__/**",
+        "node_modules/**",
+        "vitest.config.*",
+        "tsconfig.json",
+      ],
       thresholds: {
         statements: 14,
         branches: 12,

@@ -15,9 +15,9 @@ const I18nMiddleware = createI18nMiddleware({
   resolveLocaleFromRequest: (request: NextRequest) => {
     const headers = Object.fromEntries(request.headers.entries());
     const negotiator = new Negotiator({ headers });
-    const acceptedLanguages = negotiator.languages().filter(
-      (l) => l !== "*" && l.length > 0
-    );
+    const acceptedLanguages = negotiator
+      .languages()
+      .filter((l) => l !== "*" && l.length > 0);
 
     const matchedLocale = matchLocale(acceptedLanguages, locales, "en");
 

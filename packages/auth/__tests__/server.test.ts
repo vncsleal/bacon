@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockCookies = vi.fn();
 
@@ -16,7 +16,7 @@ const { getSessionInfo } = await import("../server");
 
 function createJWT(payload: Record<string, unknown>): string {
   const header = Buffer.from(JSON.stringify({ alg: "HS256" })).toString(
-    "base64url",
+    "base64url"
   );
   const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const signature = "fake-signature";
@@ -108,7 +108,7 @@ describe("getSessionInfo", () => {
 
   it("returns null values on invalid JSON in payload", async () => {
     const header = Buffer.from(JSON.stringify({ alg: "HS256" })).toString(
-      "base64url",
+      "base64url"
     );
     const body = Buffer.from("not-json").toString("base64url");
     mockCookies.mockReturnValue({

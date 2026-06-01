@@ -32,46 +32,46 @@ export const SignIn = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
+        <label className="font-medium text-sm" htmlFor="email">
           Email
         </label>
         <input
+          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           id="email"
-          type="email"
-          value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           required
-          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          type="email"
+          value={email}
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label className="font-medium text-sm" htmlFor="password">
           Password
         </label>
         <input
+          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           id="password"
-          type="password"
-          value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
           required
-          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          type="password"
+          value={password}
         />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
       <button
-        type="submit"
+        className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90 disabled:opacity-50"
         disabled={loading}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        type="submit"
       >
         {loading ? "Signing in…" : "Sign in"}
       </button>
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-muted-foreground text-sm">
         Don&apos;t have an account?{" "}
-        <a href="/sign-up" className="font-medium text-primary hover:underline">
+        <a className="font-medium text-primary hover:underline" href="/sign-up">
           Sign up
         </a>
       </p>

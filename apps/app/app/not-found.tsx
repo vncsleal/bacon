@@ -1,5 +1,10 @@
 import { Button } from "@repo/design-system/components/ui/button";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@repo/design-system/components/ui/empty";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@repo/design-system/components/ui/empty";
 import Link from "next/link";
 
 const NotFound = () => (

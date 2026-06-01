@@ -1,7 +1,7 @@
-import { Resend } from "resend";
-import { createElement } from "react";
-import type { ReactElement } from "react";
 import { log } from "@repo/observability/log";
+import type { ReactElement } from "react";
+import { createElement } from "react";
+import { Resend } from "resend";
 import { keys } from "./keys";
 import { VerifyEmailTemplate } from "./templates/verify-email";
 
@@ -26,7 +26,10 @@ export async function sendEmail({
   react,
 }: SendEmailParams): Promise<SendEmailResult> {
   if (!resend) {
-    log.warn("[email] Email service not configured — skipping", { to, subject });
+    log.warn("[email] Email service not configured — skipping", {
+      to,
+      subject,
+    });
     return { success: false, error: "Email service not configured" };
   }
 

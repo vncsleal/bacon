@@ -14,6 +14,5 @@ import { NextResponse } from "next/server";
 //     ],
 //   }
 
-export const POST = async (): Promise<Response> => {
-  return NextResponse.json({ message: "ok" });
-};
+export const POST = async (): Promise<Response> =>
+  NextResponse.json({ message: "ok" });

@@ -1,7 +1,7 @@
 "use server";
-import { createAuth } from "@repo/database/convex/auth";
-import { api } from "@repo/database/convex/_generated/api";
 import { getToken } from "@convex-dev/better-auth/nextjs";
+import { api } from "@repo/database/convex/_generated/api";
+import { createAuth } from "@repo/database/convex/auth";
 import { fetchQuery } from "convex/nextjs";
 
 export const searchUsers = async (

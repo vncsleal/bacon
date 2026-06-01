@@ -28,17 +28,15 @@ export const VerifyEmailTemplate = ({
         <Container className="mx-auto py-12">
           <Section className="mt-8 rounded-md bg-zinc-200 p-px">
             <Section className="rounded-[5px] bg-white p-8">
-              <Heading className="mt-0 mb-4 text-2xl font-semibold text-zinc-950">
+              <Heading className="mt-0 mb-4 font-semibold text-2xl text-zinc-950">
                 Verify your email
               </Heading>
-              <Text className="m-0 text-zinc-500">
-                Hi {name},
-              </Text>
+              <Text className="m-0 text-zinc-500">Hi {name},</Text>
               <Text className="mt-2 text-zinc-500">
                 Use the code below to verify your email address:
               </Text>
               <Section className="my-8 text-center">
-                <Text className="inline-block rounded-md bg-zinc-100 px-8 py-4 font-mono text-3xl tracking-widest text-zinc-900">
+                <Text className="inline-block rounded-md bg-zinc-100 px-8 py-4 font-mono text-3xl text-zinc-900 tracking-widest">
                   {otp}
                 </Text>
               </Section>

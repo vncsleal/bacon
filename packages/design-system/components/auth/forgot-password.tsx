@@ -3,10 +3,5 @@
 import { AuthView } from "@bettercone/ui";
 
 export function ForgotPassword() {
-  return (
-    <AuthView
-      view="FORGOT_PASSWORD"
-      redirectTo="/sign-in"
-    />
-  );
+  return <AuthView redirectTo="/sign-in" view="FORGOT_PASSWORD" />;
 }

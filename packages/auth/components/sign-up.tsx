@@ -18,7 +18,9 @@ export const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(
+    null
+  );
   const [resending, setResending] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +37,10 @@ export const SignUp = () => {
     setLoading(false);
 
     if (result.error) {
-      setState({ phase: "error", message: result.error.message ?? "Sign up failed. Please try again." });
+      setState({
+        phase: "error",
+        message: result.error.message ?? "Sign up failed. Please try again.",
+      });
       return;
     }
 
@@ -66,7 +71,9 @@ export const SignUp = () => {
     setVerifying(false);
 
     if (result.error) {
-      setVerificationError(result.error.message ?? "Invalid code. Please try again.");
+      setVerificationError(
+        result.error.message ?? "Invalid code. Please try again."
+      );
       return;
     }
 
@@ -92,49 +99,52 @@ export const SignUp = () => {
       <div className="flex flex-col gap-4 text-center">
         <div className="rounded-md bg-muted p-6">
           <h2 className="font-semibold text-lg">Check your email</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-muted-foreground text-sm">
             We sent a verification code to{" "}
             <span className="font-medium text-foreground">{state.email}</span>.
             Enter the code below to activate your account.
           </p>
-          <form onSubmit={handleVerify} className="mt-4 flex flex-col gap-3">
+          <form className="mt-4 flex flex-col gap-3" onSubmit={handleVerify}>
             <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={6}
-              value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-              placeholder="000000"
               autoFocus
               className="mx-auto w-40 rounded-md border bg-background px-3 py-2 text-center font-mono text-lg tracking-widest outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+              inputMode="numeric"
+              maxLength={6}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+              pattern="[0-9]*"
+              placeholder="000000"
+              type="text"
+              value={otp}
             />
             {verificationError && (
-              <p className="text-sm text-destructive">{verificationError}</p>
+              <p className="text-destructive text-sm">{verificationError}</p>
             )}
             <button
-              type="submit"
+              className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90 disabled:opacity-50"
               disabled={verifying || otp.length !== OTP_LENGTH}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              type="submit"
             >
               {verifying ? "Verifying…" : "Verify email"}
             </button>
           </form>
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-4 text-muted-foreground text-xs">
             Didn&apos;t receive the code?{" "}
             <button
-              type="button"
+              className="font-medium text-primary underline"
               disabled={resending}
               onClick={handleResend}
-              className="font-medium text-primary underline"
+              type="button"
             >
               {resending ? "Sending…" : "Resend code"}
             </button>
           </p>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Already verified?{" "}
-          <a href="/sign-in" className="font-medium text-primary hover:underline">
+          <a
+            className="font-medium text-primary hover:underline"
+            href="/sign-in"
+          >
             Sign in
           </a>
         </p>
@@ -143,63 +153,63 @@ export const SignUp = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="name" className="text-sm font-medium">
+        <label className="font-medium text-sm" htmlFor="name">
           Full name
         </label>
         <input
+          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           id="name"
-          type="text"
-          value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Jane Smith"
           required
-          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          type="text"
+          value={name}
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
+        <label className="font-medium text-sm" htmlFor="email">
           Email
         </label>
         <input
+          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           id="email"
-          type="email"
-          value={formEmail}
           onChange={(e) => setFormEmail(e.target.value)}
           placeholder="you@example.com"
           required
-          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          type="email"
+          value={formEmail}
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label className="font-medium text-sm" htmlFor="password">
           Password
         </label>
         <input
+          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           id="password"
-          type="password"
-          value={password}
+          minLength={8}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          minLength={8}
           required
-          className="rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          type="password"
+          value={password}
         />
       </div>
       {state.phase === "error" && (
-        <p className="text-sm text-destructive">{state.message}</p>
+        <p className="text-destructive text-sm">{state.message}</p>
       )}
       <button
-        type="submit"
+        className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90 disabled:opacity-50"
         disabled={loading}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        type="submit"
       >
         {loading ? "Creating account…" : "Create account"}
       </button>
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-muted-foreground text-sm">
         Already have an account?{" "}
-        <a href="/sign-in" className="font-medium text-primary hover:underline">
+        <a className="font-medium text-primary hover:underline" href="/sign-in">
           Sign in
         </a>
       </p>
