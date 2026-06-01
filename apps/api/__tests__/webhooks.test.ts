@@ -45,8 +45,8 @@ vi.mock("@repo/payments", () => ({
   },
 }));
 
-import { POST as paymentsPOST } from "../app/webhooks/payments/route";
 import { headers } from "next/headers";
+import { POST as paymentsPOST } from "../app/webhooks/payments/route";
 
 describe("Payments Webhook", () => {
   it("returns error when stripe-signature header is missing", async () => {
