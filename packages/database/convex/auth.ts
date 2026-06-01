@@ -25,10 +25,7 @@ const stripeClient = env.STRIPE_SECRET_KEY
  * Asserts that a Stripe price ID env var is set.
  * Must only be called when Stripe is configured (stripeClient is truthy).
  */
-function requirePriceId(
-  value: string | undefined,
-  name: string
-): string {
+function requirePriceId(value: string | undefined, name: string): string {
   if (!value) {
     throw new Error(
       `${name} must be set in environment when Stripe is configured`
