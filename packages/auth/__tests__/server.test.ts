@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const mockGetToken = vi.fn();
+vi.mock("@convex-dev/better-auth/nextjs", () => ({
+  getToken: mockGetToken,
+}));
+
 const mockCookies = vi.fn();
 
 vi.mock("server-only", () => ({}));
@@ -12,7 +17,7 @@ vi.mock("next/headers", () => ({
   cookies: () => mockCookies(),
 }));
 
-const { getSessionInfo } = await import("../server");
+const { getSessionInfo, getToken } = await import("../server");
 
 function createJWT(payload: Record<string, unknown>): string {
   const header = Buffer.from(JSON.stringify({ alg: "HS256" })).toString(
@@ -22,6 +27,39 @@ function createJWT(payload: Record<string, unknown>): string {
   const signature = "fake-signature";
   return `${header}.${body}.${signature}`;
 }
+
+describe("getToken (re-exported from @convex-dev/better-auth/nextjs)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("re-exports getToken from the upstream module", () => {
+    expect(getToken).toBe(mockGetToken);
+  });
+
+  it("delegates to the upstream getToken and returns the token", async () => {
+    mockGetToken.mockResolvedValue("test-token");
+
+    const result = await mockGetToken();
+
+    expect(result).toBe("test-token");
+  });
+
+  it("returns null when no session exists", async () => {
+    mockGetToken.mockResolvedValue(null);
+
+    const result = await mockGetToken();
+
+    expect(result).toBeNull();
+  });
+
+  it("propagates errors from the upstream getToken", async () => {
+    const expected = new Error("upstream failure");
+    mockGetToken.mockRejectedValue(expected);
+
+    await expect(mockGetToken()).rejects.toThrow(expected);
+  });
+});
 
 describe("getSessionInfo", () => {
   beforeEach(() => {
@@ -34,7 +72,9 @@ describe("getSessionInfo", () => {
 
   it("returns null when no cookie exists", async () => {
     mockCookies.mockReturnValue({
-      get: () => ({}),
+      get: () => {
+        return;
+      },
     });
 
     const result = await getSessionInfo();
