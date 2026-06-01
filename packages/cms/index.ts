@@ -1,4 +1,6 @@
 import { basehub as basehubClient, fragmentOn } from "basehub";
+// ensures types are passed through to apps that use this package
+import type * as _types from "./basehub-types.d.ts";
 import "./basehub.config";
 
 // Guard: only initialise when a token is present — avoids startup crash when
