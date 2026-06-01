@@ -17,8 +17,7 @@
         "noArrayIndexKey": "off",
         "noMisplacedAssertion": "off",
         "noEmptyBlockStatements": "off",
-        "noConsole": "off",
-        "noExplicitAny": "off"
+        "noConsole": "off"
       },
       "nursery": {
         "noShadow": "off"
