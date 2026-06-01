@@ -4,6 +4,7 @@ const HTTP_OK = 200;
 const HTTP_INTERNAL_ERROR = 500;
 
 process.env.STRIPE_SECRET_KEY = "sk_test_mock_key_for_testing";
+process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_mock_secret";
 
 vi.mock("@/env", () => ({
   env: {
