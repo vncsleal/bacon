@@ -1,4 +1,6 @@
 import { basehub as basehubClient, fragmentOn } from "basehub";
+// biome-ignore lint/correctness/noUnusedImports: Type import ensures basehub-types.d.ts declarations are loaded by consumers
+import type * as _types from "./basehub-types.d.ts";
 import "./basehub.config";
 
 // Guard: only initialise when a token is present — avoids startup crash when
