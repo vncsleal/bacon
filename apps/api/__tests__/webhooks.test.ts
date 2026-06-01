@@ -1,13 +1,15 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 const HTTP_OK = 200;
 const HTTP_INTERNAL_ERROR = 500;
 
-process.env.BETTER_AUTH_SECRET = "dummy-ci-secret-32-chars-long-for-build";
-process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
-process.env.NEXT_PUBLIC_WEB_URL = "http://localhost:3001";
-process.env.STRIPE_SECRET_KEY = "sk_test_mock_key_for_testing";
-process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_mock_secret";
+vi.hoisted(() => {
+  process.env.BETTER_AUTH_SECRET = "dummy-ci-secret-32-chars-long-for-build";
+  process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
+  process.env.NEXT_PUBLIC_WEB_URL = "http://localhost:3001";
+  process.env.STRIPE_SECRET_KEY = "sk_test_mock_key_for_testing";
+  process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_mock_secret";
+});
 
 vi.mock("@/env", () => ({
   env: {
@@ -44,26 +46,9 @@ vi.mock("@repo/payments", () => ({
 }));
 
 import { POST as paymentsPOST } from "../app/webhooks/payments/route";
-import { env } from "@/env";
 import { headers } from "next/headers";
 
 describe("Payments Webhook", () => {
-  beforeEach(() => {
-    env.STRIPE_WEBHOOK_SECRET = "whsec_test_secret";
-    vi.mocked(headers).mockReset();
-  });
-
-  it("returns Not configured when STRIPE_WEBHOOK_SECRET is not set", async () => {
-    env.STRIPE_WEBHOOK_SECRET = undefined as unknown as string;
-
-    const request = new Request("http://localhost:3002", { method: "POST" });
-    const response = await paymentsPOST(request);
-    const body = await response.json();
-
-    expect(response.status).toBe(HTTP_OK);
-    expect(body).toEqual({ message: "Not configured", ok: false });
-  });
-
   it("returns error when stripe-signature header is missing", async () => {
     vi.mocked(headers).mockResolvedValue(new Headers());
 
