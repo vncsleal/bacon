@@ -1,12 +1,6 @@
 {
   "name": "bacon",
   "version": "0.1.0",
-  "bin": {
-    "bacon": "dist/index.js"
-  },
-  "files": [
-    "dist/index.js"
-  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -17,21 +11,17 @@
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "analyze": "turbo analyze",
     "translate": "turbo translate",
-    "boundaries": "turbo boundaries",
     "bump-deps": "npx npm-check-updates --deep -u -x recharts && pnpm install",
     "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system",
     "migrate": "cd packages/database && npx convex deploy",
     "clean": "git clean -xdf node_modules"
   },
   "devDependencies": {
-    "@auto-it/first-time-contributor": "^11.3.0",
     "@biomejs/biome": "2.4.15",
     "@playwright/test": "^1.52.0",
     "@repo/typescript-config": "workspace:*",
-    "@turbo/gen": "^2.5.8",
     "@types/node": "^24.9.1",
     "@vitest/coverage-v8": "^4.1.7",
-    "tsup": "^8.5.0",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3",
     "ultracite": "^7.8.1",
@@ -41,10 +31,6 @@
     "node": ">=20"
   },
   "packageManager": "pnpm@10.19.0",
-  "dependencies": {
-    "@clack/prompts": "^0.11.0",
-    "commander": "^14.0.2"
-  },
   "pnpm": {
     "overrides": {
       "parse5": "^7.2.1"

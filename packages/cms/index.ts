@@ -1,5 +1,5 @@
 import { basehub as basehubClient, fragmentOn } from "basehub";
-// ensures types are passed through to apps that use this package
+// biome-ignore lint/correctness/noUnusedImports: Type import ensures basehub-types.d.ts declarations are loaded by consumers
 import type * as _types from "./basehub-types.d.ts";
 import "./basehub.config";
 

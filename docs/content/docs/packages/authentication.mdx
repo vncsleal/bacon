@@ -1,28 +1,64 @@
 ---
 title: Authentication
-description: We use Clerk to handle authentication, user and organization management.
+description: bacon uses Better Auth to handle authentication, user and organization management.
 ---
 
 ![/images/authentication.png](/images/authentication.png)
 
-bacon manages authentication through the use of a `auth` package. By default, this package is a wrapper around [Clerk](https://clerk.com/) which provides a complete authentication and user management solution that integrates seamlessly with Next.js applications.
+bacon manages authentication through the use of the `auth` package. By default, this package is a wrapper around [Better Auth](https://better-auth.com/) which provides a complete authentication and user management solution that integrates seamlessly with Next.js and Convex.
+
+## Architecture
+
+Better Auth runs as a Next.js route handler at `apps/app/app/api/auth/[...all]/route.ts`. It is NOT a separate server.
+
+The Convex plugin (`@convex-dev/better-auth`) issues a short-lived JWT cookie which is checked by the middleware and consumed by server components.
+
+**Auth flow:**
+1. User signs in at `/sign-in` → Better Auth sets a Convex JWT cookie
+2. Middleware checks cookie presence → redirects to `/sign-in` if missing
+3. Server components call `getToken(createAuth)` to retrieve the JWT
+4. Convex queries receive the JWT as `{ token }` — Convex validates it server-side
 
 ## In-App
 
 The `@repo/auth` package exposes an `AuthProvider`, however you don't need to use this directly. The [`DesignSystemProvider`](/packages/design-system/provider) includes all relevant providers and higher-order components.
 
-From here, you can use all the pre-built components and hooks provided by Clerk. To demonstrate this, we've added the `<OrganizationSwitcher>` and `<UserButton>` components to the sidebar, as well as built out the Sign In and Sign Up pages.
+From here, you can use all the pre-built components and hooks provided by Better Auth:
 
-![/images/sign-in.png](/images/sign-in.png)
+```tsx
+import { authClient } from "@repo/auth/client";
+
+// Current user
+const { data: session } = authClient.useSession();
+
+// Organization
+const { data: activeOrg } = authClient.useActiveOrganization();
+await authClient.organization.list();
+await authClient.organization.setActive({ organizationId: id });
+```
+
+## Sign In & Sign Up
+
+We've built out the Sign In and Sign Up pages using Better Auth components. You can customize these in the `auth` package.
+
+## Server-Side Usage
+
+In server components (RSC):
+
+```tsx
+import { getToken } from "@convex-dev/better-auth/nextjs";
+import { createAuth } from "@repo/database/convex/auth";
+import { api } from "@repo/database/convex/_generated/api";
+import { fetchQuery } from "convex/nextjs";
+
+const token = await getToken(createAuth);
+const user = token ? await fetchQuery(api.auth.getCurrentUser, {}, { token }) : null;
+```
 
 ## Webhooks
 
-Clerk uses webhooks to handle authentication events and you can send these to your application. Read more about [inbound authentication webhooks](/packages/webhooks/inbound#authentication-events).
+bacon uses Svix to handle inbound webhooks. Authentication-related webhooks are handled through the webhooks package. Read more about [inbound webhooks](/packages/webhooks/inbound).
 
-## Email Templates
+## Email Verification
 
-Clerk handles authentication and authorization emails automatically. You can configure the theming of Clerk-sent emails in their dashboard.
-
-### Local Development
-
-Currently there's no way to easily test Clerk webhooks locally, so you'll have to test them in a staging environment. This means deploying your app to a "production" state Vercel project with development environment variables e.g. `staging-api.example.com`. Then you can add this URL to your Clerk project's webhook settings.
+Better Auth sends verification OTP emails via the Resend email integration. The `emailOTP` plugin is configured in the auth setup with automatic verification on sign-up.

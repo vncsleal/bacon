@@ -69,7 +69,8 @@
       "!dist",
       "!storybook-static",
       "!packages/database/convex/_generated",
-      "!packages/database/convex/betterAuth/_generated"
+      "!packages/database/convex/betterAuth/_generated",
+      "!.opencode"
     ]
   }
 }

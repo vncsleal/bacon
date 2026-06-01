@@ -53,6 +53,8 @@ jobs:
           RESEND_FROM: ci@example.com
           RESEND_TOKEN: re_dummyci
           STRIPE_SECRET_KEY: sk_dummy_ci_secret_key_for_build
+          STRIPE_FREE_PRICE_ID: price_dummy_free
+          STRIPE_PRO_PRICE_ID: price_dummy_pro
         run: pnpm exec turbo build --filter '!storybook'
 
       - name: Create Release

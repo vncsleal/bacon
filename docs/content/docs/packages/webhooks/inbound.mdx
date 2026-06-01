@@ -1,28 +1,26 @@
 ---
 title: Inbound Webhooks
-description: Receive inbound webhooks from other services.
+description: How inbound webhooks are configured in bacon.
 ---
 
-bacon has pre-built webhook handlers for several key services.
+![/images/webhooks.png](/images/webhooks.png)
 
-## Payment Events
+bacon makes use of [Svix](https://svix.com) to handle inbound webhooks. Some of our packages take advantage of webhooks, for example:
 
-[Payment events](/packages/payments) are handled in the `POST /webhooks/payments` route in the `api` app. This route constructs the event and then switches on the event type to determine how to process the event.
+- [Authentication](/migrations/authentication) — responds to user CRUD events.
+- [Payments](/packages/payments) — handles Stripe events.
+- [CMS](/packages/cms) — revalidates cached content.
 
-<Info>To test webhooks locally, we've configured the Stripe CLI to forward webhooks to your local server. This will start automatically when you run `pnpm dev`.</Info>
+## Securing your endpoints
 
-## Authentication Events
+To secure your webhook endpoints, Svix verifies that the webhook signature is valid by using a signing secret method. See the [Svix documentation](https://docs.svix.com/reception/verifying) for more details.
 
-[Authentication events](/packages/authentication) are handled in the `POST /webhooks/auth` route in the `api` app. 
+## Local Development
 
-<Tip>Make sure you enable the webhook events you need in your Clerk project settings.</Tip>
+You can use Svix's [ingestion API](https://docs.svix.com/ingestion) or the [Svix CLI](https://docs.svix.com/cli) to forward events to your local server.
 
-### Local Development
+For Stripe webhooks, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward events:
 
-Currently there's no way to easily test Clerk webhooks locally, so you'll have to test them in a staging environment. This means deploying your app to a "production" state Vercel project with development environment variables e.g. `staging-api.example.com`. Then you can add this URL to your Clerk project's webhook settings.
-
-## Database Events
-
-One of the most common use cases for inbound webhooks is to notify your application when a database record is created, updated, or deleted. This allows you to react to changes asynchronously, rather than polling the database, cron jobs or other methods.
-
-If you [migrate to Supabase](/migrations/database/supabase), they have an incredibly powerful feature called [Database Webhooks](https://supabase.com/docs/guides/database/webhooks) that helps with this.
+```sh
+stripe listen --forward-to localhost:3002/webhooks/payments
+```

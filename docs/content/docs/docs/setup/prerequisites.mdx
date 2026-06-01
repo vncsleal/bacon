@@ -20,7 +20,11 @@ We're aware of issues on [non-Ubuntu Linux distributions](https://github.com/vnc
 
 ## Package Manager
 
-bacon defaults to using [pnpm](https://pnpm.io/) as a package manager, but you can use [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/) or [bun](https://bun.sh/) instead by passing a flag during the [installation](/docs/setup/installation) step.
+bacon uses [pnpm](https://pnpm.io/) as its package manager. Make sure you have pnpm 10+ installed:
+
+```sh
+corepack enable pnpm
+```
 
 ## Stripe CLI
 
@@ -32,17 +36,14 @@ Once installed, you can login to authenticate with your Stripe account.
 stripe login
 ```
 
-## Mintlify CLI
-
-We use the [Mintlify CLI](https://mintlify.com/docs/development) to preview the [docs](/apps/docs) locally.
-
 ## Accounts
 
 bacon relies on various SaaS products. You will need to create accounts with the following services then set the API keys in your [environment variables](/docs/setup/env):
 
 - [Arcjet](https://arcjet.com), for [application security](/packages/security/application).
+- [Better Auth](https://better-auth.com), for [authentication](/packages/authentication).
 - [BetterStack](https://betterstack.com), for [logging](/packages/observability/logging) and [uptime monitoring](/packages/observability/uptime).
-- [Clerk](https://clerk.com), for [authentication](/packages/authentication).
+- [Convex](https://convex.dev), for [database](/packages/database).
 - [Google Analytics](https://developers.google.com/analytics), for [web analytics](/packages/analytics/web).
 - [Posthog](https://posthog.com), for [product analytics](/packages/analytics/product).
 - [Resend](https://resend.com), for [transactional emails](/packages/email).
