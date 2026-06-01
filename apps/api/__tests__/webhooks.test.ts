@@ -3,6 +3,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 const HTTP_OK = 200;
 const HTTP_INTERNAL_ERROR = 500;
 
+process.env.BETTER_AUTH_SECRET = "dummy-ci-secret-32-chars-long-for-build";
 process.env.STRIPE_SECRET_KEY = "sk_test_mock_key_for_testing";
 process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_mock_secret";
 
