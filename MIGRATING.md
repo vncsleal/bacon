@@ -243,6 +243,41 @@ Three deployable applications:
 All three share one Convex deployment. See `apps/docs/deployment.mdx` for
 detailed instructions on Vercel and Docker setup.
 
+### Custom domains
+
+Each deployable app needs its own domain in production.
+Set them up in the Vercel dashboard (Project → Settings → Domains):
+
+| App | Example domain |
+|-----|----------------|
+| **Dashboard** (`apps/app`) | `app.yourdomain.com` |
+| **Marketing site** (`apps/web`) | `yourdomain.com` |
+| **API server** (`apps/api`) | `api.yourdomain.com` |
+
+Vercel provides CNAME targets for each domain — add them to your DNS
+provider (e.g., `app.yourdomain.com CNAME cname.vercel-dns.com`).
+If deploying `apps/api` on Docker, use an A record pointing to your
+server IP instead.
+
+The **docs site** (`apps/docs`) is a Mintlify site — configure its
+domain in the [Mintlify dashboard](https://mintlify.com), not in Vercel.
+
+After domains are set, update your environment variables for production:
+
+| Variable | Example |
+|----------|---------|
+| `SITE_URL` | `https://app.yourdomain.com` |
+| `NEXT_PUBLIC_APP_URL` | `https://app.yourdomain.com` |
+| `NEXT_PUBLIC_WEB_URL` | `https://yourdomain.com` |
+| `NEXT_PUBLIC_API_URL` | `https://api.yourdomain.com` |
+| `NEXT_PUBLIC_DOCS_URL` | `https://docs.yourdomain.com` |
+
+Convex URLs (`NEXT_PUBLIC_CONVEX_URL`, `NEXT_PUBLIC_CONVEX_SITE_URL`)
+stay as provided by your Convex deployment — no custom domain needed.
+
+See [Vercel's custom domain docs](https://vercel.com/docs/projects/domains/add-a-domain)
+for DNS setup details per provider.
+
 ---
 
 ## Final checklist
@@ -258,6 +293,8 @@ detailed instructions on Vercel and Docker setup.
 - [ ] **Phase 3** — Email templates branded to your company
 - [ ] **Phase 3** — Doc sites (Mintlify + Fuma) updated
 - [ ] **Phase 4** — `.env.local` created with all service credentials
+- [ ] **Phase 5** — Custom domains configured in Vercel + DNS
+- [ ] **Phase 5** — URL env vars updated to production domains
 - [ ] **Phase 5** — Deployed to Vercel / your infrastructure
 
 ---

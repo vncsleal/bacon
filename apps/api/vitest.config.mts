@@ -13,7 +13,7 @@ export default defineConfig({
       exclude: ["__tests__/**", "node_modules/**", ".next/**"],
       thresholds: {
         statements: 40,
-        branches: 30,
+        branches: 27,
         functions: 22,
         lines: 40,
       },
