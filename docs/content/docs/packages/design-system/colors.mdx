@@ -1,58 +1,20 @@
 ---
 title: Colors
-description: CSS variables and how they work
+description: How colors are configured in bacon.
 ---
 
-bacon makes use of the CSS variables offered by [shadcn/ui](https://ui.shadcn.com/). They're a brilliant way of abstracting the scaling and maintenance difficulties associated with [Dark Mode](/packages/design-system/dark-mode) and whitelabelling.
+![/images/colors.png](/images/colors.png)
 
-These colors have also been applied to other tools, such as the `AuthProvider`, to ensure that third-party components align with the application design as closely as possible.
+Colors in bacon are organized around a central CSS file that defines the application's design tokens, ensuring consistency across the application.
 
-## Usage
+## CSS Variables
 
-All default pages and components use these colors. You can also use them in your own components, like so:
+We use CSS custom properties for colors, and Tailwind CSS is configured to consume them.
 
-```tsx title="component.tsx"
-export const MyComponent = () => (
-  <div className="bg-background text-foreground border rounded-4xl shadow">
-    <p>I'm using CSS Variables!</p>
-  </div>
-);
-```
+## Changing the Primary Color
 
-You can also access colors in JavaScript through the `tailwind` utility exported from `@repo/tailwind-config`, like so:
+To change the primary color, update the CSS variables in the color file. The system is based on HSL values which allows for easy customization.
 
-```tsx title="component.tsx"
-import { tailwind } from '@repo/tailwind-config';
-
-export const MyComponent = () => (
-  <div style={{
-    background: tailwind.theme.colors.background,
-    color: tailwind.theme.colors.muted.foreground,
-  }}>
-    <p>I'm using styles directly from the Tailwind config!</p>
-  </div>
-);
-```
-
-## Caveats
-
-Currently, it's not possible to change the Clerk theme to match the exact theme of the app. This is because Clerk's Theme doesn't accept custom CSS variables. We'd like to be able to add the following in the future:
-
-```jsx title="packages/design-system/providers/clerk.tsx {4-15}"
-const variables: Theme['variables'] = {
-  // ...
-
-  colorBackground: 'hsl(var(--background))',
-  colorPrimary: 'hsl(var(--primary))',
-  colorDanger: 'hsl(var(--destructive))',
-  colorInputBackground: 'hsl(var(--transparent))',
-  colorInputText: 'hsl(var(--text-foreground))',
-  colorNeutral: 'hsl(var(--neutral))',
-  colorShimmer: 'hsl(var(--primary) / 10%)',
-  colorSuccess: 'hsl(var(--success))',
-  colorText: 'hsl(var(--text-foreground))',
-  colorTextOnPrimaryBackground: 'hsl(var(--text-foreground))',
-  colorTextSecondary: 'hsl(var(--text-muted-foreground))',
-  colorWarning: 'hsl(var(--warning))',
-};
-```
+1. Open the color configuration file
+2. Update the `--primary` and `--primary-foreground` values
+3. The rest of the application will automatically reflect the change

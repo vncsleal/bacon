@@ -5,10 +5,10 @@ description: How to change the database provider to Supabase.
 
 [Supabase](https://supabase.com) is an open source Firebase alternative providing a Postgres database, Authentication, instant APIs, Edge Functions, Realtime subscriptions, and Storage.
 
-`bacon` uses Neon as the database provider with Prisma as the ORM as well as Clerk for authentication. This guide will provide the steps you need to switch the database provider from Neon to Supabase. This guide is based on a few existing resources, including [Supabase's guide](https://supabase.com/partners/integrations/prisma) and [Prisma's guide](https://www.prisma.io/docs/orm/overview/databases/supabase).
+`bacon` uses Convex as the default database provider. If you are using the Prisma adapter stub, this guide will help you switch the database provider from Neon to Supabase. For authentication, bacon uses Better Auth (not Clerk). This guide is based on a few existing resources, including [Supabase's guide](https://supabase.com/partners/integrations/prisma) and [Prisma's guide](https://www.prisma.io/docs/orm/overview/databases/supabase).
 
 <Note>
- For authentication, see the [Supabase Auth migration guide](/migrations/authentication/supabase) to switch from Clerk to Supabase Auth with organization management, user roles, and more.
+ For authentication, see the [Supabase Auth migration guide](/migrations/authentication/supabase).
 </Note>
 
 Here's how to switch from Neon to [Supabase](https://supabase.com) for your `bacon` project.

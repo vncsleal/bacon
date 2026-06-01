@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@react-email/components": "0.5.7",
-    "@react-email/preview-server": "^4.3.2",
     "@repo/email": "workspace:*",
     "react": "19.2.0",
     "react-email": "4.3.2"

@@ -3,10 +3,17 @@ title: Studio
 description: Visualize and edit your database in a UI.
 ---
 
-<Tip>The `studio` application runs on port 3005.</Tip>
+<Info>
+  The Studio app has been removed from bacon. The Convex dashboard provides a built-in data browser for viewing and editing your database.
+</Info>
 
-bacon includes Prisma Studio, which is a visual editor for your database. To start it, run the following command:
+## Convex Dashboard
 
-```sh title="Terminal"
-pnpm dev --filter studio
-```
+Visit your [Convex dashboard](https://dashboard.convex.dev) to:
+
+- Browse and edit database tables
+- View function logs and metrics
+- Configure environment variables
+- Manage deployments
+
+Alternatively, run `npx convex dashboard` from the `packages/database` directory to open the dashboard locally.

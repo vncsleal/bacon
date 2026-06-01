@@ -2,6 +2,7 @@ import { stripe } from "@better-auth/stripe";
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { sendVerificationOTPEmail } from "@repo/email";
+import { keys as paymentsKeys } from "@repo/payments/keys";
 import { betterAuth } from "better-auth";
 import { apiKey, emailOTP, organization } from "better-auth/plugins";
 import { v } from "convex/values";
@@ -13,12 +14,28 @@ import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 
 const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+const env = paymentsKeys();
 
 // Initialize Stripe client only when API key is available
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripeClient = stripeSecretKey
-  ? new Stripe(stripeSecretKey, { apiVersion: "2025-09-30.clover" })
+const stripeClient = env.STRIPE_SECRET_KEY
+  ? new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: "2025-09-30.clover" })
   : null;
+
+/**
+ * Asserts that a Stripe price ID env var is set.
+ * Must only be called when Stripe is configured (stripeClient is truthy).
+ */
+function requirePriceId(
+  value: string | undefined,
+  name: string
+): string {
+  if (!value) {
+    throw new Error(
+      `${name} must be set in environment when Stripe is configured`
+    );
+  }
+  return value;
+}
 
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
@@ -85,21 +102,27 @@ export const createAuth = (
         ? [
             stripe({
               stripeClient,
-              stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
+              stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET || "",
               createCustomerOnSignUp: true,
               subscription: {
                 enabled: true,
                 plans: [
                   {
                     name: "free",
-                    priceId: process.env.STRIPE_FREE_PRICE_ID || "price_free",
+                    priceId: requirePriceId(
+                      env.STRIPE_FREE_PRICE_ID,
+                      "STRIPE_FREE_PRICE_ID"
+                    ),
                     limits: {
                       projects: 1,
                     },
                   },
                   {
                     name: "pro",
-                    priceId: process.env.STRIPE_PRO_PRICE_ID || "price_pro",
+                    priceId: requirePriceId(
+                      env.STRIPE_PRO_PRICE_ID,
+                      "STRIPE_PRO_PRICE_ID"
+                    ),
                     limits: {
                       projects: 10,
                     },
