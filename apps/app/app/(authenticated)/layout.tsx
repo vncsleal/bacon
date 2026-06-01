@@ -11,9 +11,9 @@ import { env } from "@/env";
 import { NotificationsProvider } from "./components/notifications-provider";
 import { GlobalSidebar } from "./components/sidebar";
 
-type AppLayoutProperties = {
+interface AppLayoutProperties {
   readonly children: ReactNode;
-};
+}
 
 const AppLayout = async ({ children }: AppLayoutProperties) => {
   if (!env.NEXT_PUBLIC_CONVEX_URL) {

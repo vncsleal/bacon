@@ -2,7 +2,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 
 const Vercel = () => (
   <svg
-    className="-translate-y-[0.5px] h-[18px] w-[18px] fill-current"
+    className="h-[18px] w-[18px] -translate-y-[0.5px] fill-current"
     fill="none"
     height="22"
     viewBox="0 0 235 203"

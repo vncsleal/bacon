@@ -14,9 +14,9 @@ import { getPageImage, source } from "../../lib/source";
 import { baseOptions } from "../layout.config";
 import Home from "./(home)";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ slug?: string[] }>;
-};
+}
 
 const Page = async (props: PageProps) => {
   const params = await props.params;

@@ -3,10 +3,10 @@ import type { CmsDataPort, CmsUiComponents } from "./port";
 
 const HAS_TOKEN = !!process.env.BASEHUB_TOKEN;
 
-type CmsAdapter = {
-  ui: CmsUiComponents;
+interface CmsAdapter {
   data: CmsDataPort;
-};
+  ui: CmsUiComponents;
+}
 
 let adapter: CmsAdapter | undefined;
 const getRemoteImage = (): CmsUiComponents["Image"] => {

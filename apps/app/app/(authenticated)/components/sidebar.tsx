@@ -70,11 +70,16 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { Search } from "./search";
 
-type GlobalSidebarProperties = {
+interface GlobalSidebarProperties {
   readonly children: ReactNode;
-};
+}
 
-type OrgItem = { id: string; name: string; slug: string; logo?: string | null };
+interface OrgItem {
+  id: string;
+  logo?: string | null;
+  name: string;
+  slug: string;
+}
 
 const OrgSwitcher = () => {
   const { data: session } = authClient.useSession();

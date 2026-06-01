@@ -4,11 +4,11 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { captureException } from "@sentry/nextjs";
 import { useEffect } from "react";
 
-export type ErrorPageProperties = {
+export interface ErrorPageProperties {
+  readonly description?: string;
   readonly error: Error & { digest?: string };
   readonly reset: () => void;
-  readonly description?: string;
-};
+}
 
 export const ErrorPage = ({
   error,

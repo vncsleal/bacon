@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-type Author = {
+interface Author {
   company: {
     id: string;
     name: string;
@@ -9,7 +9,7 @@ type Author = {
     id: string;
     name: string;
   };
-};
+}
 
 export const Authors = ({ data }: { data: Author[] }) => (
   <div className="not-prose mb-12 flex flex-col gap-2">
@@ -30,7 +30,7 @@ export const Authors = ({ data }: { data: Author[] }) => (
                 width={32}
               />
             </div>
-            <div className="-bottom-1 -right-1 absolute h-4 w-4 overflow-hidden rounded-full border object-cover">
+            <div className="absolute -right-1 -bottom-1 h-4 w-4 overflow-hidden rounded-full border object-cover">
               <Image
                 alt=""
                 className="m-0 h-full w-full object-cover"
