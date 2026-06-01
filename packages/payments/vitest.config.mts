@@ -10,7 +10,7 @@ export default defineConfig({
       exclude: ["__tests__/**", "node_modules/**", "vitest.config.*", "tsconfig.json"],
       thresholds: {
         statements: 60,
-        branches: 45,
+        branches: 50,
         functions: 80,
         lines: 60,
       },

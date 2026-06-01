@@ -29,6 +29,9 @@ jobs:
       - name: Lint
         run: pnpm check
 
+      - name: Test
+        run: pnpm exec turbo test --filter '!app' --filter '!storybook' --filter '!@repo/database'
+
       - name: Build
         env:
           BASEHUB_TOKEN: ""
